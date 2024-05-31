@@ -1,0 +1,8 @@
+package entity
+
+type Role struct {
+	ID         int64  `json:"id"`
+	Name       string `json:"name"`
+	CreateTime string `json:"create_time"`
+	UpdateTime string `json:"update_time"`
+}
