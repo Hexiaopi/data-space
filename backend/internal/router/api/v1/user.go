@@ -2,28 +2,87 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/hexiaopi/data-space/internal/pkg/retcode"
+
+	"github.com/hexiaopi/data-space/internal/global"
 	"github.com/hexiaopi/data-space/internal/service"
-	"github.com/hexiaopi/data-space/internal/store"
-	"github.com/hexiaopi/data-space/pkg/jwt"
 )
 
 type UserController struct {
 	srv service.Service
 }
 
-func NewUserController(store store.Factory, option store.Option, jwt jwt.JWT) *UserController {
+func NewUserController(srv service.Service) *UserController {
 	return &UserController{
-		srv: service.NewService(store, option, jwt),
+		srv: srv,
 	}
 }
 
 func (c *UserController) Login(ctx *gin.Context) (interface{}, error) {
 	var req service.LoginRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		return nil, retcode.RequestUnMarshalError
+		return nil, global.RequestUnMarshalError
 	}
 	res, err := c.srv.Users().Login(ctx, &req)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (c *UserController) Logout(ctx *gin.Context) (interface{}, error) {
+	return nil, nil
+}
+
+func (c *UserController) Info(ctx *gin.Context) (interface{}, error) {
+	res, err := c.srv.Users().Info(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (c *UserController) Create(ctx *gin.Context) (interface{}, error) {
+	var req service.CreateUserRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		return nil, global.RequestUnMarshalError
+	}
+	err := c.srv.Users().Create(ctx, &req)
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+func (c *UserController) Update(ctx *gin.Context) (interface{}, error) {
+	var req service.UpdateUserRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		return nil, global.RequestUnMarshalError
+	}
+	err := c.srv.Users().Update(ctx, &req)
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+func (c *UserController) Delete(ctx *gin.Context) (interface{}, error) {
+	var req service.DeleteUserRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		return nil, global.RequestUnMarshalError
+	}
+	err := c.srv.Users().Delete(ctx, &req)
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+func (c *UserController) List(ctx *gin.Context) (interface{}, error) {
+	var req service.ListUserRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		return nil, global.RequestUnMarshalError
+	}
+	res, err := c.srv.Users().List(ctx, &req)
 	if err != nil {
 		return nil, err
 	}

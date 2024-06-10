@@ -1,28 +1,25 @@
-import { defineStore } from 'pinia'
-import { login } from '@/api/user'
-import type { LoginParams } from '@/api/user/type'
+import { defineStore } from "pinia"
+import { info } from "@/api/user"
 
-let useUserStore = defineStore('user', {
+let useUserStore = defineStore("user", {
     state: () => {
         return {
-            token: localStorage.getItem('token'),
-        }
-    },
-    actions: {
-        async userLogin(params: LoginParams) {
-            let result = await login(params)
-            console.log(result)
-            if (result.code === '000000') {
-                this.token = result.data.access_token
-                localStorage.setItem('token', result.data.access_token)
-                return 'ok'
-            } else {
-                return Promise.reject(new Error(result.desc))
-            }
+            userInfo: JSON.parse(localStorage.getItem("userInfo") || "{}")
         }
     },
     getters: {
-
+        id: state => state.userInfo?.id,
+        name: state => state.userInfo?.name,
+        avatar: state => state.userInfo?.avatar,
+        roles: state => state.userInfo?.roles,
+        role: state => state.userInfo?.current_role,
+    },
+    actions: {
+        async getUserInfo() {
+            let result = await info()
+            this.userInfo = result.data
+            localStorage.setItem("userInfo", JSON.stringify(result.data))
+        }
     }
 })
 

@@ -7,6 +7,8 @@ import (
 
 type Service interface {
 	Users() UserSrv
+	Roles() RoleSrv
+	Menus() MenuSrv
 }
 
 type service struct {
@@ -25,4 +27,12 @@ func NewService(store store.Factory, option store.Option, jwt jwt.JWT) Service {
 
 func (s *service) Users() UserSrv {
 	return NewUserService(s.store, s.option, s.jwt)
+}
+
+func (s *service) Roles() RoleSrv {
+	return NewRoleService(s.store, s.option)
+}
+
+func (s *service) Menus() MenuSrv {
+	return NewMenuService(s.store, s.option)
 }

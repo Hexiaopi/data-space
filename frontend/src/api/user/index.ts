@@ -1,11 +1,10 @@
 import request from "@/utils/request"
-import type { LoginParams, LoginResponse } from "./type"
+import type { InfoResponse } from "./type"
 
 enum API {
-    LOGIN_URL = '/api/v1/user/login',
-    USER_INFO_URL = '/api/v1/user/info'
+    Info_URL = "/api/v1/user",
 }
 
-export const login = (data: LoginParams) => {
-    return request.post<any, LoginResponse>(API.LOGIN_URL, data)
+export const info = () => {
+    return request.get<any, InfoResponse>(API.Info_URL)
 }

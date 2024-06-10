@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"sync"
 	"time"
 
 	log "log/slog"
@@ -62,7 +63,8 @@ func (s *Server) Stop() error {
 	return nil
 }
 
-func (s *Server) Run(ctx context.Context) error {
+func (s *Server) Run(ctx context.Context, wg *sync.WaitGroup) error {
+	defer wg.Done()
 	errChan := make(chan error)
 	go func() {
 		if err := s.Start(ctx); err != nil {

@@ -2,11 +2,13 @@ package middleware
 
 import (
 	"errors"
+	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/hexiaopi/data-space/internal/pkg/retcode"
+	"github.com/hexiaopi/data-space/pkg/metrics"
+	"github.com/hexiaopi/data-space/pkg/retcode"
 )
 
 type SkipperFunc func(ctx *gin.Context) bool
@@ -53,6 +55,7 @@ func ReturnError(ctx *gin.Context, err error) {
 	if !errors.As(err, &code) {
 		code = retcode.UnknownError
 	}
-	retcode.RequestRetcodeCounter.WithLabelValues(path, method, code.Code, code.Desc).Inc()
+	ctx.JSON(http.StatusOK, code)
+	metrics.RequestRetcodeCounter.WithLabelValues(path, method, code.Code, code.Desc).Inc()
 	ctx.Abort()
 }

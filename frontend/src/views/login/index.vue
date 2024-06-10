@@ -7,8 +7,7 @@
                 </el-col>
                 <el-col :span="10">
                     <h1>
-                        <img src="@/assets/images/logo.png" height="30">
-                        <span>Data Space</span>
+                        <Logo :title="title"></Logo>
                     </h1>
                     <el-form-item prop="username">
                         <el-input placeholder=" 请输入用户名" :prefix-icon="User" v-model="loginForm.username"></el-input>
@@ -29,13 +28,18 @@
 
 <script setup lang='ts'>
 import { User, Lock } from '@element-plus/icons-vue'
-import { ElNotification, FormRules } from 'element-plus';
+import { ElNotification, FormRules } from 'element-plus'
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import useAclStore from '@/store/modules/acl'
 import useUserStore from '@/store/modules/user'
-import { GetCNTime } from '@/utils/time';
+import { GetCNTime } from '@/utils/time'
+import Logo from '@/components/Logo/index.vue'
+import { initDynamicRouter } from '@/router/modules/dynamicRouter'
+const title = import.meta.env.VITE_APP_TITLE
 
 let router = useRouter()
+let aclStore = useAclStore()
 let userStore = useUserStore()
 
 let loading = ref(false)
@@ -71,8 +75,14 @@ const handler = () => {
 }
 const login = () => {
     loading.value = true
-    userStore.userLogin(loginForm).then((result) => {
-        console.log(result)
+    aclStore.userLogin(loginForm).then(() => {
+
+        //获取用户信息
+        userStore.getUserInfo()
+
+        //获取路由信息
+        initDynamicRouter()
+
         router.push('/')
         ElNotification({
             title: '登录成功',
@@ -82,7 +92,6 @@ const login = () => {
         })
         loading.value = false
     }).catch((err) => {
-        console.log(err)
         ElNotification({
             title: '登录失败',
             message: (err as Error).message,

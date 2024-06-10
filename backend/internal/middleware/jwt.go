@@ -1,11 +1,12 @@
 package middleware
 
 import (
+	"log"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/hexiaopi/data-space/internal/pkg/retcode"
+	"github.com/hexiaopi/data-space/internal/global"
 	"github.com/hexiaopi/data-space/pkg/jwt"
 )
 
@@ -18,18 +19,22 @@ func JWT(jwt jwt.JWT, skippers ...SkipperFunc) gin.HandlerFunc {
 		}
 		auth := c.Request.Header.Get("Authorization")
 		if auth == "" {
-			ReturnError(c, retcode.RequestTokenEmpty)
+			ReturnError(c, global.RequestTokenEmpty)
+			return
 		}
 		token := strings.Split(auth, " ")
-		if len(token) != 2 || token[0] != "bearer" {
-			ReturnError(c, retcode.RequestTokenEmpty)
+		if len(token) != 2 || token[0] != "Bearer" {
+			ReturnError(c, global.RequestTokenEmpty)
+			return
 		}
 		claims, err := jwt.ParseToken(token[1])
 		if err != nil {
-			ReturnError(c, retcode.RequestTokenAuthFail)
+			log.Println(err)
+			ReturnError(c, global.RequestTokenAuthFail)
+			return
 		} else {
-			c.Set("username", claims.UserName)
-			c.Set("userid", claims.UserId)
+			c.Set(global.UserName, claims.UserName)
+			c.Set(global.UserId, claims.UserId)
 			c.Next()
 		}
 	}

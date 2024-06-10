@@ -11,10 +11,13 @@ import (
 
 	"github.com/hexiaopi/data-space/internal/config"
 	"github.com/hexiaopi/data-space/internal/middleware"
-	"github.com/hexiaopi/data-space/internal/pkg/retcode"
 	"github.com/hexiaopi/data-space/internal/router/api"
 	v1 "github.com/hexiaopi/data-space/internal/router/api/v1"
+	"github.com/hexiaopi/data-space/internal/service"
 	dao "github.com/hexiaopi/data-space/internal/store/mysql"
+
+	"github.com/hexiaopi/data-space/pkg/metrics"
+	"github.com/hexiaopi/data-space/pkg/retcode"
 )
 
 type Response struct {
@@ -35,11 +38,13 @@ func Wrap(handler HandlerFunc) func(c *gin.Context) {
 			if errors.As(err, &code) {
 				response.RetCode = code
 				ctx.Error(code)
+			} else {
+				response.RetCode = retcode.InternalError
 			}
 		} else {
 			response.Data = res
 		}
-		retcode.RequestRetcodeCounter.WithLabelValues(path, method, response.Code, response.Desc).Inc()
+		metrics.RequestRetcodeCounter.WithLabelValues(path, method, response.Code, response.Desc).Inc()
 		ctx.JSON(http.StatusOK, response)
 	}
 }
@@ -66,9 +71,22 @@ func InitRouter() *gin.Engine {
 
 	v1Router := apiRouter.Group("/v1")
 
-	userRouter := v1Router.Group("/user")
-	userController := v1.NewUserController(storeIns, optionIns, config.JWT)
-	userRouter.POST("/login", Wrap(userController.Login))
+	aclRouter := v1Router.Group("/acl")
+
+	srv := service.NewService(storeIns, optionIns, config.JWT)
+
+	userController := v1.NewUserController(srv)
+	menuController := v1.NewMenuController(srv)
+
+	aclRouter.POST("/login", Wrap(userController.Login))
+	aclRouter.POST("/logout", Wrap(userController.Logout))
+	aclRouter.GET("/tree", Wrap(menuController.Tree))
+
+	v1Router.GET("/users", Wrap(userController.List))
+	v1Router.GET("/user", Wrap(userController.Info))
+	v1Router.POST("/user", Wrap(userController.Create))
+	v1Router.PUT("/user", Wrap(userController.Update))
+	v1Router.DELETE("/user", Wrap(userController.Delete))
 
 	return router
 }

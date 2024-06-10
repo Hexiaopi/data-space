@@ -1,14 +1,17 @@
-export interface LoginParams {
-    username: string,
-    password: string,
+import type { Role } from "@/api/role/type"
+
+interface User {
+    id: number,
+    name: string,
+    avatar: string,
+    create_time: string,
+    update_time: string,
+    roles: [],
+    current_role: Role,
 }
 
-interface LoginResponseData {
-    access_token: string,
-}
-
-export interface LoginResponse {
+export interface InfoResponse {
     code: string,
     desc: string,
-    data: LoginResponseData,
+    data: User,
 }

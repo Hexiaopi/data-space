@@ -25,9 +25,21 @@ func WithUserName(username string) Option {
 	}
 }
 
+func WithId(id int64) Option {
+	return func(db *gorm.DB) {
+		db.Where("id = ?", id)
+	}
+}
+
 func WithState(state uint8) Option {
 	return func(db *gorm.DB) {
 		db.Where("state = ?", state)
+	}
+}
+
+func WithTable(name string) Option {
+	return func(db *gorm.DB) {
+		db.Table(name)
 	}
 }
 
@@ -41,4 +53,8 @@ func (o Option) WithState(state uint8) store.Option {
 
 func (o Option) WithPage(pageSize, pageNum int) store.Option {
 	return WithPage(pageSize, pageNum)
+}
+
+func (o Option) WithId(id int64) store.Option {
+	return WithId(id)
 }

@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 
 	"github.com/hexiaopi/data-space/pkg/server"
@@ -45,9 +46,13 @@ func (a *App) Run() error {
 
 	errChan := make(chan error, len(a.servers))
 
+	var wg sync.WaitGroup
+
+	wg.Add(len(a.servers))
+
 	for _, srv := range a.servers {
 		go func(srv server.Server) {
-			if err := srv.Run(ctx); err != nil {
+			if err := srv.Run(ctx, &wg); err != nil {
 				errChan <- err
 			}
 		}(srv)
@@ -61,5 +66,6 @@ func (a *App) Run() error {
 		cancel()
 		return err
 	}
+	wg.Wait()
 	return nil
 }

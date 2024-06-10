@@ -38,3 +38,11 @@ func (ds *datastore) Close() error {
 func (ds *datastore) Users() store.UserStore {
 	return NewUserDao(ds.db)
 }
+
+func (ds *datastore) Roles() store.RoleStore {
+	return NewRoleDao(ds.db)
+}
+
+func (ds *datastore) Menus() store.MenuStore {
+	return NewMenuDao(ds.db)
+}

@@ -65,3 +65,19 @@ func (dao *MenuDao) Count(ctx context.Context, options ...store.Option) (int64, 
 	}
 	return count, nil
 }
+
+func (dao *MenuDao) ListRoleMenus(ctx context.Context, roleId int64, options ...store.Option) ([]model.Menu, error) {
+	menus := make([]model.Menu, 0)
+	query := dao.db.WithContext(ctx).Model(&model.Menu{}).
+		Joins("inner join sys_menu_role on sys_menu_role.menu_id=sys_menu.id").
+		Where("sys_menu_role.role_id=?", roleId).
+		Where("sys_menu.state=?", model.StatusEnable).
+		Order("sys_menu.order asc")
+	for _, option := range options {
+		option.(Option)(query)
+	}
+	if err := query.Find(&menus).Error; err != nil {
+		return nil, err
+	}
+	return menus, nil
+}

@@ -1,19 +1,25 @@
 import { createApp } from 'vue'
-import ElementPlus from 'element-plus'
-import zhCn from 'element-plus/es/locale/lang/zh-cn'
-import 'element-plus/dist/index.css'
 import App from '@/App.vue'
-import router from './router'
-import store from './store'
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+// CSS common style sheet
+import "@/style/common.scss"
+// element css
+import 'element-plus/dist/index.css'
+// element plus
+import ElementPlus from 'element-plus'
+// element icons
+import * as Icons from '@element-plus/icons-vue'
+// custom directives
+import directives from "@/directives/index"
+// vue Router
+import router from '@/router'
+// vue Store
+import store from '@/store'
+
 
 const app = createApp(App)
-app.use(ElementPlus, {
-    locale: zhCn
-})
-for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+
+// register the element Icons component
+for (const [key, component] of Object.entries(Icons)) {
     app.component(key, component)
 }
-app.use(router)
-app.use(store)
-app.mount('#app')
+app.use(ElementPlus).use(directives).use(router).use(store).mount('#app')
