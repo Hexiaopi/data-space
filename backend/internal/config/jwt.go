@@ -7,12 +7,9 @@ import (
 )
 
 type JWTConfig struct {
-	// 过期时间
-	Expire time.Duration `yaml:"expire"`
-	// 签发人
-	Issuer string `yaml:"issuer"`
-	// 秘钥
-	Secret string `yaml:"secret"`
+	Expire time.Duration `yaml:"expire"` // 过期时间
+	Issuer string        `yaml:"issuer"` // 签发人
+	Secret string        `yaml:"secret"` // 秘钥
 }
 
 var JWT jwt.JWT

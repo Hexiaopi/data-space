@@ -71,7 +71,7 @@ func (dao *MenuDao) ListRoleMenus(ctx context.Context, roleId int64, options ...
 	query := dao.db.WithContext(ctx).Model(&model.Menu{}).
 		Joins("inner join sys_menu_role on sys_menu_role.menu_id=sys_menu.id").
 		Where("sys_menu_role.role_id=?", roleId).
-		Where("sys_menu.state=?", model.StatusEnable).
+		Where("sys_menu.state=?", model.StateEnable).
 		Order("sys_menu.order asc")
 	for _, option := range options {
 		option.(Option)(query)

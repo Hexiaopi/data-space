@@ -5,6 +5,8 @@ import (
 	"errors"
 )
 
+//go:generate mockgen -self_package=github.com/hexiaopi/data-space/internal/store -destination mock_store.go -package store github.com/hexiaopi/data-space/internal/store Factory,UserStore,RoleStore,MenuStore
+
 type TxFunc = func(ctx context.Context, factory Factory) error
 
 type Factory interface {

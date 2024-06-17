@@ -56,7 +56,7 @@ func (svc *UserService) Login(ctx context.Context, param *LoginRequest) (*LoginR
 	if err := user.ComparePassword(param.PassWord); err != nil {
 		return nil, global.UserPassWordWrong
 	}
-	token, err := svc.jwt.GenerateToken(user.ID, user.UserName, user.PassWord)
+	token, err := svc.jwt.GenerateToken(user.ID, user.Name, user.Password)
 	if err != nil {
 		log.Error("jwt generate token", err)
 		return nil, global.JWTGenerateTokenFail
@@ -82,7 +82,7 @@ func (svc *UserService) Info(ctx context.Context) (*InfoResponse, error) {
 	res := InfoResponse{UserInfo: entity.UserInfo{
 		User: entity.User{
 			ID:         user.ID,
-			Name:       user.UserName,
+			Name:       user.Name,
 			Avatar:     user.Avatar,
 			CreateTime: user.CreateTime.Format(global.DateTimeFormat),
 			UpdateTime: user.UpdateTime.Format(global.DateTimeFormat),

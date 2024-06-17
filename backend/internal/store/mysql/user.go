@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"context"
+	"time"
 
 	"gorm.io/gorm"
 
@@ -30,6 +31,12 @@ func (dao *UserDao) Get(ctx context.Context, options ...store.Option) (*model.Us
 }
 
 func (dao *UserDao) Create(ctx context.Context, user *model.User) error {
+	if user == nil {
+		return nil
+	}
+	now := time.Now()
+	user.CreateTime = now
+	user.UpdateTime = now
 	return dao.db.WithContext(ctx).Create(user).Error
 }
 

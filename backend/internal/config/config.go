@@ -32,3 +32,8 @@ func Init(path string) error {
 	slog.SetDefault(logger)
 	return nil
 }
+
+func Close() {
+	db, _ := DBEngine.DB()
+	db.Close()
+}

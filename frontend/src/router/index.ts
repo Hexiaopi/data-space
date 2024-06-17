@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import NProgress from '@/config/nprogress'
 import useMenuStore from '@/store/modules/menu'
 import useAclStore from '@/store/modules/acl'
@@ -8,7 +8,7 @@ import { initDynamicRouter } from './modules/dynamicRouter'
 
 
 let router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes: [...staticRouter, ...errorRouter],
     strict: false,
     scrollBehavior: () => ({ left: 0, top: 0 }),

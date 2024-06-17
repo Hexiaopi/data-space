@@ -18,6 +18,10 @@ let useAclStore = defineStore('acl', {
             } else {
                 return Promise.reject(new Error(result.desc))
             }
+        },
+        removeToken() {
+            this.token = ''
+            localStorage.removeItem('token')
         }
     },
     getters: {

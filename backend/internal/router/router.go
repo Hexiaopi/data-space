@@ -67,6 +67,7 @@ func InitRouter() *gin.Engine {
 	apiRouter := router.Group("/api")
 	apiRouter.Use(middleware.Metrics())
 	apiRouter.Use(middleware.Cors())
+	apiRouter.Use(middleware.Logger())
 	apiRouter.Use(middleware.JWT(config.JWT, middleware.PathContainSkipper("login")))
 
 	v1Router := apiRouter.Group("/v1")
@@ -77,6 +78,7 @@ func InitRouter() *gin.Engine {
 
 	userController := v1.NewUserController(srv)
 	menuController := v1.NewMenuController(srv)
+	roleController := v1.NewRoleController(srv)
 
 	aclRouter.POST("/login", Wrap(userController.Login))
 	aclRouter.POST("/logout", Wrap(userController.Logout))
@@ -88,5 +90,9 @@ func InitRouter() *gin.Engine {
 	v1Router.PUT("/user", Wrap(userController.Update))
 	v1Router.DELETE("/user", Wrap(userController.Delete))
 
+	v1Router.GET("/roles", Wrap(roleController.List))
+	v1Router.POST("/roles", Wrap(roleController.Create))
+	v1Router.PUT("/roles/:id", Wrap(roleController.Update))
+	v1Router.DELETE("/roles/:id", Wrap(roleController.Delete))
 	return router
 }

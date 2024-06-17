@@ -1,6 +1,7 @@
 package model
 
 const (
-	StatusEnable  = 1
-	StatusDisable = 2
+	StateDelete  = 0 //删除
+	StateEnable  = 1 //启用
+	StateDisable = 2 //禁用
 )

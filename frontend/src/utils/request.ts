@@ -22,6 +22,17 @@ request.interceptors.request.use(
 
 request.interceptors.response.use(
     (response) => {
+        let resp = response.data
+        if (resp.code !== '000000') {
+            ElMessage({ message: resp.desc, type: 'error' })
+            if (resp.code === '000010') {
+                // 跳转到登录页面
+                const aclStore = useAclStore()
+                aclStore.removeToken()
+                window.location.href = '/login'
+            }
+            return Promise.reject(resp)
+        }
         return response.data;
     },
     (error) => {

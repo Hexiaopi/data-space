@@ -19,6 +19,7 @@ func main() {
 	if err := config.Init("app.yaml"); err != nil {
 		panic(err)
 	}
+	defer config.Close()
 	if err := rootCmd.Execute(); err != nil {
 		panic(err)
 	}

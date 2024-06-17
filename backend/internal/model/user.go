@@ -7,13 +7,13 @@ import (
 )
 
 type User struct {
-	ID         int64     `gorm:"column:id"`
-	UserName   string    `gorm:"column:username"`
-	PassWord   string    `gorm:"column:password"`
-	Avatar     string    `gorm:"column:avatar"`
-	CreateTime time.Time `gorm:"column:create_time"`
-	UpdateTime time.Time `gorm:"column:update_time"`
-	State      uint8     `gorm:"column:state"`
+	ID         int64
+	Name       string
+	Password   string
+	Avatar     string
+	CreateTime time.Time
+	UpdateTime time.Time
+	State      uint8
 }
 
 func (User) TableName() string {
@@ -21,14 +21,14 @@ func (User) TableName() string {
 }
 
 func (u *User) EncryptPassword() error {
-	password, err := auth.Encrypt(u.PassWord)
+	password, err := auth.Encrypt(u.Password)
 	if err != nil {
 		return err
 	}
-	u.PassWord = password
+	u.Password = password
 	return nil
 }
 
 func (u *User) ComparePassword(password string) error {
-	return auth.Compare(u.PassWord, password)
+	return auth.Compare(u.Password, password)
 }

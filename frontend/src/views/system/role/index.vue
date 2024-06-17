@@ -1,7 +1,220 @@
 <template>
-    <div>角色管理</div>
+    <div>
+        <div>
+            <el-input v-model="listQuery.name" placeholder="名称" style="width: 200px;"
+                @keyup.enter.native="handleFilter" />
+            <el-select v-model="listQuery.state" placeholder="状态" style="width: 90px" @change="handleFilter">
+                <el-option v-for="item in stateOptions" :key="item" :label="statusDisplayFilter(item)" :value="item" />
+            </el-select>
+            <el-button type="primary" :icon="Search" @click="handleFilter">
+                搜索
+            </el-button>
+            <el-button v-auth="'role-add'" type="primary" :icon="Plus" @click="handleCreate">
+                添加
+            </el-button>
+        </div>
+        <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" board fit highlight-current-row
+            style="width: 100%;">
+            <el-table-column label="ID" prop="id" align="center" min-width="50px">
+            </el-table-column>
+            <el-table-column label="角色名称" prop="name" align="center" width="100px">
+            </el-table-column>
+            <el-table-column label="角色描述" prop="desc" align="center" min-width="100px">
+            </el-table-column>
+            <el-table-column label="状态" align="center" width="100">
+                <template #default="scope">
+                    <el-tag :type="statusTypeFilter(scope.row.state)">{{ statusDisplayFilter(scope.row.state)
+                        }}</el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column label="创建时间" prop="create_time" align="center" min-width="100px">
+            </el-table-column>
+            <el-table-column label="更新时间" prop="update_time" align="center" min-width="100px">
+            </el-table-column>
+            <el-table-column label="操作" align="center" width="200">
+                <template #default="{ row, $index }">
+                    <el-button v-auth="'role-update'" type="primary" size="small" @click="handleUpdate(row)">
+                        编辑
+                    </el-button>
+                    <el-button v-auth="'role-delete'" v-if="row.state != 2" size="small" type="danger"
+                        @click="handleDelete(row, $index)">
+                        删除
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <el-pagination v-model:current-page="listQuery.page_num" v-model:page-size="listQuery.page_size"
+            :page-sizes="[10, 20, 30, 40]" :small="true" :disabled="false" :background="false"
+            layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
+            @current-change="handleCurrentChange" />
+
+        <el-dialog :title="textMap[dialogStatus]" v-model="dialogFormVisible">
+            <el-form ref="dataForm" :model="temp" label-position="left" label-width="70px"
+                style="width: 400px; margin-left:50px;">
+                <el-form-item label="角色名称" prop="title">
+                    <el-input v-model="temp.name" />
+                </el-form-item>
+                <el-form-item label="角色描述">
+                    <el-input v-model="temp.desc" :autosize="{ minRows: 2, maxRows: 4 }" type="textarea"
+                        placeholder="请输入" />
+                </el-form-item>
+                <el-form-item label="状态">
+                    <el-select v-model="temp.state" class="filter-item" placeholder="请选择">
+                        <el-option v-for="item in stateOptions" :key="item" :label="item" :value="item" />
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <template #footer>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible = false">
+                        取消
+                    </el-button>
+                    <el-button type="primary" @click="dialogStatus === 'create' ? createData() : updateData()">
+                        确认
+                    </el-button>
+                </div>
+            </template>
+        </el-dialog>
+
+        <!-- <el-dialog title="菜单权限" :visible.sync="dialogMenuVisible">
+            <el-form ref="menuForm" :model="temp" label-position="left" label-width="70px"
+                style="width: 400px; margin-left:50px;">
+                <el-tree :data="menus" ref="menuTree" show-checkbox node-key="id" :default-checked-keys="temp.menu_ids"
+                    default-expand-all :expand-on-click-node="false" :props="defaultMenuProps">
+                </el-tree>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogMenuVisible = false">
+                    取消
+                </el-button>
+                <el-button type="primary" @click="updateRoleMenu()">
+                    确认
+                </el-button>
+            </div>
+        </el-dialog> -->
+    </div>
 </template>
 
 <script setup lang='ts'>
+import { reactive, ref, onMounted } from 'vue'
+import { listRole, createRole, updateRole, deleteRole } from '@/api/role'
+import { Search, Plus } from '@element-plus/icons-vue'
+import { ElNotification } from 'element-plus'
+
+const list = ref([])
+const total = ref(0)
+const listLoading = ref(true)
+const listQuery = reactive({
+    page_num: 1,
+    page_size: 10,
+    name: '',
+    state: 1,
+})
+const temp = ref({
+    id: 0,
+    name: '',
+    desc: '',
+    state: 1,
+})
+const resetTemp = () => {
+    temp.value = {
+        id: 0,
+        name: '',
+        desc: '',
+        state: 1,
+    }
+}
+const dialogStatus = ref('')
+const textMap = {
+    update: '编辑',
+    create: '创建'
+}
+const statusTypeFilter = (status: number) => {
+    const statusMap = {
+        1: 'success',
+        0: 'gray',
+        2: 'danger'
+    }
+    return statusMap[status]
+}
+const statusDisplayFilter = (status: number) => {
+    const statusMap = {
+        1: '有效',
+        0: '无效'
+    }
+    return statusMap[status]
+}
+const dialogFormVisible = ref(false)
+const stateOptions = [0, 1]
+
+onMounted(() => {
+    getList()
+})
+
+function getList() {
+    listLoading.value = true
+    listRole(listQuery).then(response => {
+        list.value = response.data.roles
+        total.value = response.data.total
+        listLoading.value = false
+    })
+}
+
+function handleCreate() {
+    dialogStatus.value = 'create'
+    dialogFormVisible.value = true
+}
+
+function handleUpdate(row) {
+    resetTemp()
+    temp.value = Object.assign({}, row)
+    dialogStatus.value = 'update'
+    dialogFormVisible.value = true
+}
+
+function handleFilter() {
+    listQuery.page_num = 1
+    getList()
+}
+
+function handleDelete(row, index) {
+    deleteRole(row.id).then(() => {
+        list.value.splice(index, 1)
+    })
+}
+
+function createData() {
+    createRole(temp.value).then(() => {
+        getList()
+        dialogFormVisible.value = false
+        ElNotification({
+            title: 'Success',
+            message: '创建成功',
+            type: 'success',
+        })
+    })
+}
+
+function updateData() {
+    updateRole(temp.value.id, temp.value).then(() => {
+        getList()
+        dialogFormVisible.value = false
+        ElNotification({
+            title: 'Success',
+            message: '修改成功',
+            type: 'success',
+        })
+    })
+}
+
+const handleSizeChange = (val: number) => {
+    listQuery.page_size = val
+    getList()
+}
+const handleCurrentChange = (val: number) => {
+    listQuery.page_num = val
+    getList()
+}
 </script>
 <style scoped></style>

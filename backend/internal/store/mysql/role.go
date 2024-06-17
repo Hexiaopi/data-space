@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"context"
+	"time"
 
 	"github.com/hexiaopi/data-space/internal/model"
 	"github.com/hexiaopi/data-space/internal/store"
@@ -29,16 +30,33 @@ func (dao *RoleDao) Get(ctx context.Context, options ...store.Option) (*model.Ro
 }
 
 func (dao *RoleDao) Create(ctx context.Context, role *model.Role) error {
+	if role == nil {
+		return nil
+	}
+	now := time.Now()
+	role.CreateTime = now
+	role.UpdateTime = now
 	return dao.db.WithContext(ctx).Create(role).Error
 }
 
 func (dao *RoleDao) Update(ctx context.Context, role *model.Role) error {
-	return dao.db.WithContext(ctx).Save(role).Error
+	return dao.db.WithContext(ctx).Model(&model.Role{}).
+		Where("id = ?", role.ID).
+		Updates(map[string]interface{}{
+			"name":        role.Name,
+			"desc":        role.Desc,
+			"state":       role.State,
+			"update_time": time.Now(),
+		}).Error
 }
 
 func (dao *RoleDao) Delete(ctx context.Context, id int64) error {
-	role := model.Role{ID: id}
-	return dao.db.WithContext(ctx).Delete(&role).Error
+	return dao.db.WithContext(ctx).Model(&model.Role{}).
+		Where("id = ?", id).
+		Updates(map[string]interface{}{
+			"state":       model.StateDelete,
+			"update_time": time.Now(),
+		}).Error
 }
 
 func (dao *RoleDao) List(ctx context.Context, options ...store.Option) ([]model.Role, error) {

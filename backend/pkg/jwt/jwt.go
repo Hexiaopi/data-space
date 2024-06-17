@@ -12,6 +12,12 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
+// go:generate mockgen -destination=./mock/jwt.go -package=mock github.com/xiaohubai/go-gin-example/jwt JWTer
+type Tokener interface {
+	GenerateToken(id int64, username, password string) (string, error)
+	ParseToken(token string) (*Claims, error)
+}
+
 type JWT struct {
 	// 过期时间
 	Expire time.Duration

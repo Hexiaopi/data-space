@@ -3,11 +3,12 @@ package model
 import "time"
 
 type Role struct {
-	ID         int64     `gorm:"column:id"`
-	Name       string    `gorm:"column:name"`
-	CreateTime time.Time `gorm:"column:create_time"`
-	UpdateTime time.Time `gorm:"column:update_time"`
-	State      uint8     `gorm:"column:state"`
+	ID         int64
+	Name       string
+	Desc       string
+	CreateTime time.Time
+	UpdateTime time.Time
+	State      uint8
 }
 
 func (Role) TableName() string {

@@ -55,7 +55,7 @@ func TestComCreate(t *testing.T) {
 		t.Fatal(err)
 	}
 	user := model.User{
-		UserName:   "张三",
+		Name:       "张三",
 		CreateTime: time.Now(),
 		UpdateTime: time.Now(),
 	}
@@ -75,7 +75,7 @@ func TestComUpdate(t *testing.T) {
 	}
 	user := model.User{
 		ID:         6,
-		UserName:   "张三",
+		Name:       "张三",
 		CreateTime: time.Now(),
 		UpdateTime: time.Now(),
 		State:      1,

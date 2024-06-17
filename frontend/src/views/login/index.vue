@@ -35,7 +35,6 @@ import useAclStore from '@/store/modules/acl'
 import useUserStore from '@/store/modules/user'
 import { GetCNTime } from '@/utils/time'
 import Logo from '@/components/Logo/index.vue'
-import { initDynamicRouter } from '@/router/modules/dynamicRouter'
 const title = import.meta.env.VITE_APP_TITLE
 
 let router = useRouter()
@@ -79,9 +78,6 @@ const login = () => {
 
         //获取用户信息
         userStore.getUserInfo()
-
-        //获取路由信息
-        initDynamicRouter()
 
         router.push('/')
         ElNotification({
