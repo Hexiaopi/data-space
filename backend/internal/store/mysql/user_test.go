@@ -25,7 +25,7 @@ func TestUserDao_Get(t *testing.T) {
 	{ //根据name查询用户
 		rows := sqlmock.NewRows([]string{"id", "name"}).AddRow(1, "admin")
 		mock.ExpectQuery("SELECT * FROM `sys_user` WHERE name = ? ORDER BY `sys_user`.`id` LIMIT ?").WithArgs("admin", 1).WillReturnRows(rows)
-		user, err := dao.Get(context.Background(), NewOption().WithUserName("admin"))
+		user, err := dao.Get(context.Background(), NewOption().WithName("admin"))
 		if err != nil {
 			t.Fatal(err)
 		}

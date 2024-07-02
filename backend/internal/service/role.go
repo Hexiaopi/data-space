@@ -78,8 +78,10 @@ func (svc *RoleService) Delete(ctx context.Context, id int64) error {
 }
 
 type ListRoleRequest struct {
-	PageNum  int `json:"page_num"`
-	PageSize int `json:"page_size"`
+	Name     string `json:"name"`
+	State    uint8  `json:"state"`
+	PageNum  int    `json:"page_num"`
+	PageSize int    `json:"page_size"`
 }
 
 type ListRoleResponse struct {
@@ -91,6 +93,12 @@ func (svc *RoleService) List(ctx context.Context, req *ListRoleRequest) (*ListRo
 	log.Println("list role req", req)
 	var res ListRoleResponse
 	options := make([]store.Option, 0)
+	if req.Name != "" {
+		options = append(options, svc.option.WithName(req.Name))
+	}
+	if req.State > 0 {
+		options = append(options, svc.option.WithState(req.State))
+	}
 	count, err := svc.store.Roles().Count(ctx, options...)
 	if err != nil {
 		log.Println(err)

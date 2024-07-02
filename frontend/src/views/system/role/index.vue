@@ -23,8 +23,9 @@
             </el-table-column>
             <el-table-column label="状态" align="center" width="100">
                 <template #default="scope">
-                    <el-tag :type="statusTypeFilter(scope.row.state)">{{ statusDisplayFilter(scope.row.state)
-                        }}</el-tag>
+                    <el-tag :type="statusTypeFilter(scope.row.state)">
+                        {{ statusDisplayFilter(scope.row.state) }}
+                    </el-tag>
                 </template>
             </el-table-column>
             <el-table-column label="创建时间" prop="create_time" align="center" min-width="100px">
@@ -36,8 +37,7 @@
                     <el-button v-auth="'role-update'" type="primary" size="small" @click="handleUpdate(row)">
                         编辑
                     </el-button>
-                    <el-button v-auth="'role-delete'" v-if="row.state != 2" size="small" type="danger"
-                        @click="handleDelete(row, $index)">
+                    <el-button v-auth="'role-delete'" type="danger" size="small" @click="handleDelete(row, $index)">
                         删除
                     </el-button>
                 </template>
@@ -61,7 +61,8 @@
                 </el-form-item>
                 <el-form-item label="状态">
                     <el-select v-model="temp.state" class="filter-item" placeholder="请选择">
-                        <el-option v-for="item in stateOptions" :key="item" :label="item" :value="item" />
+                        <el-option v-for="item in stateOptions" :key="item" :label="statusDisplayFilter(item)"
+                            :value="item" />
                     </el-select>
                 </el-form-item>
             </el-form>
@@ -109,20 +110,20 @@ const listQuery = reactive({
     page_num: 1,
     page_size: 10,
     name: '',
-    state: 1,
+    state: 0,
 })
 const temp = ref({
     id: 0,
     name: '',
     desc: '',
-    state: 1,
+    state: 0,
 })
 const resetTemp = () => {
     temp.value = {
         id: 0,
         name: '',
         desc: '',
-        state: 1,
+        state: 0,
     }
 }
 const dialogStatus = ref('')
@@ -132,21 +133,22 @@ const textMap = {
 }
 const statusTypeFilter = (status: number) => {
     const statusMap = {
+        0: 'info',
         1: 'success',
-        0: 'gray',
         2: 'danger'
     }
     return statusMap[status]
 }
 const statusDisplayFilter = (status: number) => {
     const statusMap = {
+        0: '全部',
         1: '有效',
-        0: '无效'
+        2: '无效'
     }
     return statusMap[status]
 }
 const dialogFormVisible = ref(false)
-const stateOptions = [0, 1]
+const stateOptions = [0, 1, 2]
 
 onMounted(() => {
     getList()

@@ -1,3 +1,5 @@
+import type { User } from "@/api/user/type"
+
 export interface LoginParams {
     username: string,
     password: string,
@@ -26,4 +28,11 @@ export interface MenuTreeResponse {
     code: string,
     desc: string,
     data: MenuTree[],
+}
+
+
+export interface InfoResponse {
+    code: string,
+    desc: string,
+    data: User,
 }

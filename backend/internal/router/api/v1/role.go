@@ -32,6 +32,17 @@ func (c *RoleController) List(ctx *gin.Context) (interface{}, error) {
 	if req.PageSize <= 0 {
 		req.PageSize = 10
 	}
+	name := ctx.Query("name")
+	if name != "" {
+		req.Name = name
+	}
+	state := ctx.Query("state")
+	if state != "" {
+		s, _ := strconv.ParseUint(state, 10, 64)
+		if s > 0 {
+			req.State = uint8(s)
+		}
+	}
 	res, err := c.srv.Roles().List(ctx, &req)
 	if err != nil {
 		return nil, err

@@ -10,6 +10,7 @@ import (
 
 type MenuSrv interface {
 	Tree(ctx context.Context, param *MenuTreeRequest) (*MenuTreeResponse, error)
+	List(ctx context.Context, param *MenuListRequest) (*MenuListResponse, error)
 }
 
 type MenuService struct {
@@ -54,4 +55,16 @@ func (svc *MenuService) Tree(ctx context.Context, param *MenuTreeRequest) (*Menu
 	tree := entity.GenerateMenuTree(menus)
 	res := MenuTreeResponse(tree)
 	return &res, nil
+}
+
+type MenuListRequest struct {
+	PageNum  int `json:"page_num"`
+	PageSize int `json:"page_size"`
+}
+
+type MenuListResponse struct {
+}
+
+func (svc *MenuService) List(ctx context.Context, param *MenuListRequest) (*MenuListResponse, error) {
+	return nil, nil
 }

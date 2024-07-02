@@ -23,14 +23,14 @@ func (o Option) WithPage(pageNum, pageSize int) store.Option {
 	return WithPage(pageNum, pageSize)
 }
 
-func WithUserName(username string) Option {
+func WithName(name string) Option {
 	return func(db *gorm.DB) {
-		db.Where("name = ?", username)
+		db.Where("name = ?", name)
 	}
 }
 
-func (o Option) WithUserName(username string) store.Option {
-	return WithUserName(username)
+func (o Option) WithName(username string) store.Option {
+	return WithName(username)
 }
 
 func WithId(id int64) Option {

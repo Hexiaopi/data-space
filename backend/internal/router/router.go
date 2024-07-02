@@ -83,12 +83,13 @@ func InitRouter() *gin.Engine {
 	aclRouter.POST("/login", Wrap(userController.Login))
 	aclRouter.POST("/logout", Wrap(userController.Logout))
 	aclRouter.GET("/tree", Wrap(menuController.Tree))
+	aclRouter.GET("/user", Wrap(userController.Info))
 
 	v1Router.GET("/users", Wrap(userController.List))
-	v1Router.GET("/user", Wrap(userController.Info))
-	v1Router.POST("/user", Wrap(userController.Create))
-	v1Router.PUT("/user", Wrap(userController.Update))
-	v1Router.DELETE("/user", Wrap(userController.Delete))
+	v1Router.POST("/users", Wrap(userController.Create))
+	v1Router.GET("/users/:id", Wrap(userController.Info))
+	v1Router.PUT("/users/:id", Wrap(userController.Update))
+	v1Router.DELETE("/users/:id", Wrap(userController.Delete))
 
 	v1Router.GET("/roles", Wrap(roleController.List))
 	v1Router.POST("/roles", Wrap(roleController.Create))

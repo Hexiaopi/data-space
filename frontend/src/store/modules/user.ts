@@ -1,5 +1,5 @@
 import { defineStore } from "pinia"
-import { info } from "@/api/user"
+import { info } from "@/api/acl"
 
 let useUserStore = defineStore("user", {
     state: () => {

@@ -44,7 +44,7 @@ type LoginResponse struct {
 
 func (svc *UserService) Login(ctx context.Context, param *LoginRequest) (*LoginResponse, error) {
 	options := make([]store.Option, 0)
-	options = append(options, svc.option.WithUserName(param.UserName))
+	options = append(options, svc.option.WithName(param.UserName))
 	user, err := svc.store.Users().Get(ctx, options...)
 	if err != nil {
 		log.Error("store user get", err)
