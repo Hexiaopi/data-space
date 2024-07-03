@@ -72,28 +72,43 @@ func InitRouter() *gin.Engine {
 
 	v1Router := apiRouter.Group("/v1")
 
-	aclRouter := v1Router.Group("/acl")
-
 	srv := service.NewService(storeIns, optionIns, config.JWT)
 
-	userController := v1.NewUserController(srv)
-	menuController := v1.NewMenuController(srv)
-	roleController := v1.NewRoleController(srv)
+	{
+		aclController := v1.NewAclController(srv)
+		aclRouter := v1Router.Group("/acl")
+		aclRouter.POST("/login", Wrap(aclController.Login))
+		aclRouter.POST("/logout", Wrap(aclController.Logout))
+		aclRouter.GET("/tree", Wrap(aclController.Tree))
+		aclRouter.GET("/user", Wrap(aclController.Info))
+	}
 
-	aclRouter.POST("/login", Wrap(userController.Login))
-	aclRouter.POST("/logout", Wrap(userController.Logout))
-	aclRouter.GET("/tree", Wrap(menuController.Tree))
-	aclRouter.GET("/user", Wrap(userController.Info))
+	{
+		userController := v1.NewUserController(srv)
+		userRouter := v1Router.Group("/users")
+		userRouter.GET("", Wrap(userController.List))
+		userRouter.POST("", Wrap(userController.Create))
+		userRouter.GET("/:id", Wrap(userController.Info))
+		userRouter.PUT("/:id", Wrap(userController.Update))
+		userRouter.DELETE("/:id", Wrap(userController.Delete))
+	}
 
-	v1Router.GET("/users", Wrap(userController.List))
-	v1Router.POST("/users", Wrap(userController.Create))
-	v1Router.GET("/users/:id", Wrap(userController.Info))
-	v1Router.PUT("/users/:id", Wrap(userController.Update))
-	v1Router.DELETE("/users/:id", Wrap(userController.Delete))
+	{
+		roleController := v1.NewRoleController(srv)
+		roleRouter := v1Router.Group("/roles")
+		roleRouter.GET("", Wrap(roleController.List))
+		roleRouter.POST("", Wrap(roleController.Create))
+		roleRouter.PUT("/:id", Wrap(roleController.Update))
+		roleRouter.DELETE("/:id", Wrap(roleController.Delete))
+	}
 
-	v1Router.GET("/roles", Wrap(roleController.List))
-	v1Router.POST("/roles", Wrap(roleController.Create))
-	v1Router.PUT("/roles/:id", Wrap(roleController.Update))
-	v1Router.DELETE("/roles/:id", Wrap(roleController.Delete))
+	{
+		menuController := v1.NewMenuController(srv)
+		menuRouter := v1Router.Group("/menus")
+		menuRouter.POST("", Wrap(menuController.Create))
+		menuRouter.GET("/tree", Wrap(menuController.Tree))
+		menuRouter.PUT("/:id", Wrap(menuController.Update))
+		menuRouter.DELETE("/:id", Wrap(menuController.Delete))
+	}
 	return router
 }

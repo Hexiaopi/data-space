@@ -16,11 +16,15 @@ export interface LoginResponse {
 }
 
 export interface MenuTree {
+    id: number,
     name: string,
+    desc: string,
     path: string,
     icon: string,
     type: string,
+    order: number,
     component: string,
+    parent_id: number,
     children: MenuTree[],
 }
 

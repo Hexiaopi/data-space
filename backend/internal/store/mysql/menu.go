@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"context"
+	"time"
 
 	"gorm.io/gorm"
 
@@ -30,16 +31,32 @@ func (dao *MenuDao) Get(ctx context.Context, options ...store.Option) (*model.Me
 }
 
 func (dao *MenuDao) Create(ctx context.Context, menu *model.Menu) error {
+	now := time.Now()
+	menu.CreateTime = now
+	menu.UpdateTime = now
 	return dao.db.WithContext(ctx).Create(menu).Error
 }
 
 func (dao *MenuDao) Update(ctx context.Context, menu *model.Menu) error {
-	return dao.db.WithContext(ctx).Save(menu).Error
+	return dao.db.WithContext(ctx).Model(&model.Menu{}).Where("id = ?", menu.ID).
+		Updates(map[string]interface{}{
+			"name":        menu.Name,
+			"desc":        menu.Desc,
+			"path":        menu.Path,
+			"icon":        menu.Icon,
+			"order":       menu.Order,
+			"component":   menu.Component,
+			"update_time": time.Now(),
+		}).Error
 }
 
 func (dao *MenuDao) Delete(ctx context.Context, id int64) error {
-	menu := model.Menu{ID: id}
-	return dao.db.WithContext(ctx).Delete(&menu).Error
+	return dao.db.WithContext(ctx).Model(&model.Menu{}).
+		Where("id = ?", id).
+		Updates(map[string]interface{}{
+			"state":       model.StateDelete,
+			"update_time": time.Now(),
+		}).Error
 }
 
 func (dao *MenuDao) List(ctx context.Context, options ...store.Option) ([]model.Menu, error) {

@@ -26,7 +26,7 @@ type Menu struct {
 	Component  string   `json:"component"`
 	Type       string   `json:"type"`
 	Order      int64    `json:"order"`
-	ParentId   int64    `json:"-"`
+	ParentId   int64    `json:"parent_id"`
 	CreateTime string   `json:"create_time"`
 	UpdateTime string   `json:"update_time"`
 	Children   MenuTree `json:"children"`

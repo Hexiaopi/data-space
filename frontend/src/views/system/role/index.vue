@@ -13,7 +13,7 @@
                 添加
             </el-button>
         </div>
-        <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" board fit highlight-current-row
+        <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row
             style="width: 100%;">
             <el-table-column label="ID" prop="id" align="center" min-width="50px">
             </el-table-column>

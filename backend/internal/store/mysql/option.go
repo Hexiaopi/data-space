@@ -1,6 +1,8 @@
 package mysql
 
 import (
+	"fmt"
+
 	"gorm.io/gorm"
 
 	"github.com/hexiaopi/data-space/internal/store"
@@ -51,4 +53,14 @@ func WithState(state uint8) Option {
 
 func (o Option) WithState(state uint8) store.Option {
 	return WithState(state)
+}
+
+func WithField(field string, value interface{}) Option {
+	return func(db *gorm.DB) {
+		db.Where(fmt.Sprintf("%s = ?", field), value)
+	}
+}
+
+func (o Option) WithField(field string, value interface{}) store.Option {
+	return WithField(field, value)
 }

@@ -20,8 +20,11 @@ func NewMenuController(srv service.Service) *MenuController {
 }
 
 func (c *MenuController) Tree(ctx *gin.Context) (interface{}, error) {
-	userId := ctx.Value(global.UserId).(int64)
-	var req = service.MenuTreeRequest{UserId: userId}
+	var req = service.MenuTreeRequest{}
+	name := ctx.Query("name")
+	if name != "" {
+		req.Name = name
+	}
 	return c.srv.Menus().Tree(ctx, &req)
 }
 
@@ -43,4 +46,38 @@ func (c *MenuController) List(ctx *gin.Context) (interface{}, error) {
 		return nil, err
 	}
 	return res, nil
+}
+
+func (c *MenuController) Create(ctx *gin.Context) (interface{}, error) {
+	var req service.MenuCreateRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		return nil, global.RequestUnMarshalError
+	}
+	err := c.srv.Menus().Create(ctx, &req)
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+func (c *MenuController) Update(ctx *gin.Context) (interface{}, error) {
+	var req service.MenuUpdateRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		return nil, global.RequestUnMarshalError
+	}
+	id, _ := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	err := c.srv.Menus().Update(ctx, id, &req)
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+func (c *MenuController) Delete(ctx *gin.Context) (interface{}, error) {
+	id, _ := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	err := c.srv.Menus().Delete(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
 }

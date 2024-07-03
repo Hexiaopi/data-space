@@ -27,4 +27,10 @@ var (
 	RoleCreateFail = retcode.NewCode("000205", "Role Create Fail")
 	RoleUpdateFail = retcode.NewCode("000206", "Role Update Fail")
 	RoleDeleteFail = retcode.NewCode("000207", "Role Delete Fail")
+
+	MenuTreeFail   = retcode.NewCode("000301", "Menu Tree Fail")
+	MenuCreateFail = retcode.NewCode("000302", "Menu Create Fail")
+	MenuUpdateFail = retcode.NewCode("000303", "Menu Update Fail")
+	MenuGetFail    = retcode.NewCode("000304", "Menu Found Fail")
+	MenuDeleteFail = retcode.NewCode("000307", "Menu Delete Fail")
 )

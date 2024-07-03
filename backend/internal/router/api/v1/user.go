@@ -17,22 +17,6 @@ func NewUserController(srv service.Service) *UserController {
 	}
 }
 
-func (c *UserController) Login(ctx *gin.Context) (interface{}, error) {
-	var req service.LoginRequest
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		return nil, global.RequestUnMarshalError
-	}
-	res, err := c.srv.Users().Login(ctx, &req)
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
-}
-
-func (c *UserController) Logout(ctx *gin.Context) (interface{}, error) {
-	return nil, nil
-}
-
 func (c *UserController) Info(ctx *gin.Context) (interface{}, error) {
 	res, err := c.srv.Users().Info(ctx)
 	if err != nil {
