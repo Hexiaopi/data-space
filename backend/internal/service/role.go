@@ -11,10 +11,11 @@ import (
 )
 
 type RoleSrv interface {
-	Create(ctx context.Context, req *CreateRoleRequest) error
-	Update(ctx context.Context, id int64, req *UpdateRoleRequest) error
+	Create(ctx context.Context, req *RoleCreateRequest) error
+	Update(ctx context.Context, id int64, req *RoleUpdateRequest) error
 	Delete(ctx context.Context, id int64) error
-	List(ctx context.Context, req *ListRoleRequest) (*ListRoleResponse, error)
+	List(ctx context.Context, req *RoleListRequest) (*RoleListResponse, error)
+	Get(ctx context.Context, id int64) (*RoleGetResponse, error)
 }
 
 type RoleService struct {
@@ -29,13 +30,13 @@ func NewRoleService(store store.Factory, option store.Option) *RoleService {
 	}
 }
 
-type CreateRoleRequest struct {
+type RoleCreateRequest struct {
 	Name  string `json:"name"`
 	Desc  string `json:"desc"`
 	State uint8  `json:"state"`
 }
 
-func (svc *RoleService) Create(ctx context.Context, req *CreateRoleRequest) error {
+func (svc *RoleService) Create(ctx context.Context, req *RoleCreateRequest) error {
 	var role model.Role
 	role.Name = req.Name
 	role.Desc = req.Desc
@@ -47,13 +48,13 @@ func (svc *RoleService) Create(ctx context.Context, req *CreateRoleRequest) erro
 	return nil
 }
 
-type UpdateRoleRequest struct {
+type RoleUpdateRequest struct {
 	Name  string `json:"name"`
 	Desc  string `json:"desc"`
 	State uint8  `json:"state"`
 }
 
-func (svc *RoleService) Update(ctx context.Context, id int64, req *UpdateRoleRequest) error {
+func (svc *RoleService) Update(ctx context.Context, id int64, req *RoleUpdateRequest) error {
 	role, err := svc.store.Roles().Get(ctx, svc.option.WithId(id))
 	if err != nil {
 		log.Println(err)
@@ -77,21 +78,20 @@ func (svc *RoleService) Delete(ctx context.Context, id int64) error {
 	return nil
 }
 
-type ListRoleRequest struct {
+type RoleListRequest struct {
 	Name     string `json:"name"`
 	State    uint8  `json:"state"`
 	PageNum  int    `json:"page_num"`
 	PageSize int    `json:"page_size"`
 }
 
-type ListRoleResponse struct {
+type RoleListResponse struct {
 	Roles []entity.Role `json:"roles"`
 	Total int64         `json:"total"`
 }
 
-func (svc *RoleService) List(ctx context.Context, req *ListRoleRequest) (*ListRoleResponse, error) {
-	log.Println("list role req", req)
-	var res ListRoleResponse
+func (svc *RoleService) List(ctx context.Context, req *RoleListRequest) (*RoleListResponse, error) {
+	var res RoleListResponse
 	options := make([]store.Option, 0)
 	if req.Name != "" {
 		options = append(options, svc.option.WithName(req.Name))
@@ -115,5 +115,32 @@ func (svc *RoleService) List(ctx context.Context, req *ListRoleRequest) (*ListRo
 	}
 	res.Roles = entity.ToRoles(roles)
 	res.Total = count
+	return &res, nil
+}
+
+type RoleGetResponse struct {
+	Role  entity.Role     `json:"role"`
+	Menus entity.MenuTree `json:"menus"`
+}
+
+func (svc *RoleService) Get(ctx context.Context, id int64) (*RoleGetResponse, error) {
+	var res RoleGetResponse
+	options := make([]store.Option, 0)
+	options = append(options, svc.option.WithId(id))
+	role, err := svc.store.Roles().Get(ctx, options...)
+	if err != nil {
+		log.Println(err)
+		return nil, global.RoleGetFail
+	}
+	res.Role = entity.ToRole(*role)
+
+	menus, err := svc.store.Menus().ListRoleMenus(ctx, id, svc.option.WithState(model.StateEnable))
+	if err != nil {
+		log.Println(err)
+		return nil, global.MenuTreeFail
+	}
+
+	tree := entity.GenerateMenuTree(menus)
+	res.Menus = tree
 	return &res, nil
 }

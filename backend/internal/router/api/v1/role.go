@@ -20,7 +20,7 @@ func NewRoleController(srv service.Service) *RoleController {
 }
 
 func (c *RoleController) List(ctx *gin.Context) (interface{}, error) {
-	var req service.ListRoleRequest
+	var req service.RoleListRequest
 	pageNum := ctx.Query("page_num")
 	req.PageNum, _ = strconv.Atoi(pageNum)
 
@@ -51,7 +51,7 @@ func (c *RoleController) List(ctx *gin.Context) (interface{}, error) {
 }
 
 func (c *RoleController) Create(ctx *gin.Context) (interface{}, error) {
-	var req service.CreateRoleRequest
+	var req service.RoleCreateRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		return nil, global.RequestUnMarshalError
 	}
@@ -63,7 +63,7 @@ func (c *RoleController) Create(ctx *gin.Context) (interface{}, error) {
 }
 
 func (c *RoleController) Update(ctx *gin.Context) (interface{}, error) {
-	var req service.UpdateRoleRequest
+	var req service.RoleUpdateRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		return nil, global.RequestUnMarshalError
 	}
@@ -82,4 +82,13 @@ func (c *RoleController) Delete(ctx *gin.Context) (interface{}, error) {
 		return nil, err
 	}
 	return nil, nil
+}
+
+func (c *RoleController) Get(ctx *gin.Context) (interface{}, error) {
+	id, _ := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	res, err := c.srv.Roles().Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }

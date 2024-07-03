@@ -17,12 +17,9 @@ let useMenuStore = defineStore('menu', {
         async getMenuList() {
             const { data } = await tree()
             for (let i = 0; i < data.length; i++) {
-
                 let menu = this.generateRoute(data[i])
                 this.menus.push(menu)
-
             }
-            console.log("xxxx", this.menus)
         },
         generateRoute(item) {
             return {

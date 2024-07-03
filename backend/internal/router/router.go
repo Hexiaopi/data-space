@@ -98,6 +98,7 @@ func InitRouter() *gin.Engine {
 		roleRouter := v1Router.Group("/roles")
 		roleRouter.GET("", Wrap(roleController.List))
 		roleRouter.POST("", Wrap(roleController.Create))
+		roleRouter.GET("/:id", Wrap(roleController.Get))
 		roleRouter.PUT("/:id", Wrap(roleController.Update))
 		roleRouter.DELETE("/:id", Wrap(roleController.Delete))
 	}

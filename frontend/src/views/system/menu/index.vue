@@ -168,7 +168,6 @@ function createData() {
 const handleEdit = (row: MenuTree) => {
     resetTemp()
     temp.value = Object.assign({}, row)
-    console.log(temp.value)
     dialogStatus.value = 'update'
     dialogFormVisible.value = true
 }

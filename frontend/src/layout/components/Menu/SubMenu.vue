@@ -25,9 +25,7 @@
 
 <script setup lang='ts'>
 import { useRouter } from 'vue-router'
-
-let props = defineProps(['menus'])
-console.log(props.menus)
+defineProps(['menus'])
 
 const router = useRouter()
 const handleClickMenu = (menu: any) => {
