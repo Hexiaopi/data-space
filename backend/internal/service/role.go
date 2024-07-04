@@ -16,6 +16,8 @@ type RoleSrv interface {
 	Delete(ctx context.Context, id int64) error
 	List(ctx context.Context, req *RoleListRequest) (*RoleListResponse, error)
 	Get(ctx context.Context, id int64) (*RoleGetResponse, error)
+	GetMenu(ctx context.Context, id int64) (*entity.MenuTree, error)
+	UpdateMenu(ctx context.Context, id int64, param *UpdateMenuRequest) error
 }
 
 type RoleService struct {
@@ -143,4 +145,34 @@ func (svc *RoleService) Get(ctx context.Context, id int64) (*RoleGetResponse, er
 	tree := entity.GenerateMenuTree(menus)
 	res.Menus = tree
 	return &res, nil
+}
+
+type UpdateMenuRequest struct {
+	MenuIds []int64 `json:"menu_ids"`
+}
+
+func (svc *RoleService) UpdateMenu(ctx context.Context, id int64, param *UpdateMenuRequest) error {
+	return svc.store.Tx(ctx, func(ctx context.Context, factory store.Factory) error {
+		if err := factory.Roles().DeleteMenus(ctx, id); err != nil {
+			log.Println(err)
+			return global.RoleDeleteMenuFail
+		}
+		if len(param.MenuIds) > 0 {
+			if err := factory.Roles().CreateMenus(ctx, id, param.MenuIds...); err != nil {
+				log.Println(err)
+				return global.RoleCreateMenuFail
+			}
+		}
+		return nil
+	})
+}
+
+func (svc *RoleService) GetMenu(ctx context.Context, id int64) (*entity.MenuTree, error) {
+	menus, err := svc.store.Menus().ListRoleMenus(ctx, id, svc.option.WithState(model.StateEnable))
+	if err != nil {
+		log.Println(err)
+		return nil, global.MenuTreeFail
+	}
+	tree := entity.GenerateMenuTree(menus)
+	return &tree, nil
 }

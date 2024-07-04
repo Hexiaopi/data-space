@@ -80,8 +80,9 @@
 
         <el-dialog title="菜单权限" v-model="dialogMenuVisible" style="width: 400px;">
             <el-form ref="menuForm" :model="temp" label-position="left" label-width="70px">
-                <el-tree :data="menus" ref="menuTree" show-checkbox node-key="id" :default-checked-keys="menuIds"
-                    default-expand-all :expand-on-click-node="false" :props="defaultMenuProps">
+                <el-tree :data="menus" ref="menuRef" :show-checkbox="true" :check-strictly="true" node-key="id"
+                    :default-checked-keys="menuIds" default-expand-all check-on-click-node :expand-on-click-node="false"
+                    :props="defaultMenuProps">
                     <template #default="{ node, data }">
                         <span class="custom-tree-node">
                             <el-tag v-if="data.type === 'Menu'" type="success">菜单</el-tag>
@@ -98,7 +99,7 @@
                     <el-button @click="dialogMenuVisible = false">
                         取消
                     </el-button>
-                    <el-button type="primary" @click="updateRoleMenu()">
+                    <el-button type="primary" @click="editRoleMenu()">
                         确认
                     </el-button>
                 </div>
@@ -109,10 +110,10 @@
 
 <script setup lang='ts'>
 import { reactive, ref, onMounted } from 'vue'
-import { listRole, createRole, updateRole, deleteRole, getRole } from '@/api/role'
+import { listRole, createRole, updateRole, deleteRole, getRoleMenu, updateRoleMenu } from '@/api/role'
 import { treeMenu } from '@/api/menu'
 import { Search, Plus } from '@element-plus/icons-vue'
-import { ElNotification } from 'element-plus'
+import { ElNotification, ElTree } from 'element-plus'
 
 const list = ref([])
 const menus = ref([])
@@ -169,16 +170,38 @@ const defaultMenuProps = {
 }
 const menuIds = ref([])
 
-function handleRoleMenu(id: number) {
-    getRole(id).then(response => {
-        let menus = []
-        for (let i = 0; i < response.data.menus.length; i++) {
-            menus.push(response.data.menus[i].id)
+function getTreeIds(tree, ids = []) {
+    for (let i = 0; i < tree.length; i++) {
+        ids.push(tree[i].id)
+        if (tree[i].children) {
+            getTreeIds(tree[i].children, ids)
         }
+    }
+    return ids
+}
+
+function handleRoleMenu(id: number) {
+    temp.value.id = id
+    getRoleMenu(id).then(response => {
+        let menus = getTreeIds(response.data)
+        console.log(menus)
         menuIds.value = menus
         dialogMenuVisible.value = true
     })
+}
 
+const menuRef = ref<InstanceType<typeof ElTree>>()
+function editRoleMenu() {
+    const menuIds = menuRef.value!.getCheckedKeys(false)
+    console.log(menuIds)
+    updateRoleMenu(temp.value.id, { menu_ids: menuIds }).then(() => {
+        dialogMenuVisible.value = false
+        ElNotification({
+            title: 'Success',
+            message: '修改成功',
+            type: 'success',
+        })
+    })
 }
 
 onMounted(() => {

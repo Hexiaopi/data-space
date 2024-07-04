@@ -97,3 +97,20 @@ func (dao *RoleDao) ListUserRoles(ctx context.Context, userId int64, options ...
 	}
 	return roles, nil
 }
+
+func (dao *RoleDao) DeleteMenus(ctx context.Context, id int64) error {
+	return dao.db.WithContext(ctx).Model(&model.MenuRole{}).Where("role_id = ?", id).Delete(&model.MenuRole{}).Error
+}
+
+func (dao *RoleDao) CreateMenus(ctx context.Context, id int64, menuIds ...int64) error {
+	menuRoles := make([]model.MenuRole, 0, len(menuIds))
+	now := time.Now()
+	for _, menuId := range menuIds {
+		menuRoles = append(menuRoles, model.MenuRole{
+			RoleId:     id,
+			MenuId:     menuId,
+			CreateTime: now,
+		})
+	}
+	return dao.db.WithContext(ctx).CreateInBatches(menuRoles, len(menuIds)).Error
+}

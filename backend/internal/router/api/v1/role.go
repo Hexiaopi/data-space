@@ -92,3 +92,24 @@ func (c *RoleController) Get(ctx *gin.Context) (interface{}, error) {
 	}
 	return res, nil
 }
+
+func (c *RoleController) GetMenu(ctx *gin.Context) (interface{}, error) {
+	id, _ := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	res, err := c.srv.Roles().GetMenu(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (c *RoleController) UpdateMenu(ctx *gin.Context) (interface{}, error) {
+	var req service.UpdateMenuRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		return nil, global.RequestUnMarshalError
+	}
+	id, _ := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if err := c.srv.Roles().UpdateMenu(ctx, id, &req); err != nil {
+		return nil, err
+	}
+	return nil, nil
+}

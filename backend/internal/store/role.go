@@ -14,4 +14,6 @@ type RoleStore interface {
 	List(ctx context.Context, options ...Option) ([]model.Role, error)
 	Count(ctx context.Context, options ...Option) (int64, error)
 	ListUserRoles(ctx context.Context, userId int64, options ...Option) ([]model.Role, error)
+	DeleteMenus(ctx context.Context, id int64) error
+	CreateMenus(ctx context.Context, id int64, menuIds ...int64) error
 }
