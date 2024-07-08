@@ -17,7 +17,7 @@ let router = createRouter({
 const WHITE_LIST = ['/login', '/404', '/403']
 
 // 路由守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     const aclStore = useAclStore()
     const menuStore = useMenuStore()
 
@@ -48,7 +48,8 @@ router.beforeEach((to, from, next) => {
 
     // 动态路由
     if (menuStore.menus.length === 0) {
-        initDynamicRouter()
+        await initDynamicRouter()
+        return next({ ...to, replace: true })
     }
 
     next()

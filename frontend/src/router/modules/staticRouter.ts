@@ -37,6 +37,6 @@ export const errorRouter = [
     },
     {
         path: '/:pathMatch(.*)*',
-        redirect: '/404',
+        component: () => import('@/views/error-page/404.vue'),
     },
 ]

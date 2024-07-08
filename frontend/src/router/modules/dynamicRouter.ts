@@ -7,7 +7,7 @@ export const initDynamicRouter = async () => {
 
     try {
         await menuStore.getMenuList()
-        menuStore.menus.forEach(item => {
+        menuStore.flatMenuList.forEach(item => {
             router.addRoute('layout', item as unknown as RouteRecordRaw)
         })
     } catch (error) {

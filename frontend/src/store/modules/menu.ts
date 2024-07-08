@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { tree } from '@/api/acl'
+import { getFlatMenuList } from '@/utils/index'
 
 const modules = import.meta.glob("@/views/**/*.vue")
 
@@ -11,7 +12,7 @@ let useMenuStore = defineStore('menu', {
         }
     },
     getters: {
-
+        flatMenuList: state => getFlatMenuList(state.menus),
     },
     actions: {
         async getMenuList() {
@@ -36,6 +37,15 @@ let useMenuStore = defineStore('menu', {
                 },
                 children: item.children?.filter((menu) => menu.type === 'Menu').map((menu) => this.generateRoute(menu)),
             }
+        },
+        flatMenuTree(tree) {
+            return tree.reduce((prev, item) => {
+                prev.push(item)
+                if (item.children) {
+                    prev = prev.concat(this.flatMenuTree(item.children))
+                }
+                return prev
+            }, [])
         },
     }
 })
