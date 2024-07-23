@@ -46,9 +46,9 @@
         </el-table>
 
         <el-pagination v-model:current-page="listQuery.page_num" v-model:page-size="listQuery.page_size"
-            :page-sizes="[10, 20, 30, 40]" :small="true" :disabled="false" :background="false"
-            layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
-            @current-change="handleCurrentChange" />
+            :page-sizes="[10, 20, 30, 40]" :disabled="false" background layout="total, sizes, prev, pager, next, jumper"
+            :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+            style="padding-top: 10px;" />
 
         <el-dialog :title="textMap[dialogStatus]" v-model="dialogFormVisible" style="width: 400px;">
             <el-form ref="dataForm" :model="temp" label-position="left" label-width="70px">
@@ -89,7 +89,7 @@
                             <el-tag v-else-if="data.type === 'Button'" type="warning">按钮</el-tag>
                             <el-tag v-else-if="data.type === 'Link'" type="danger">链接</el-tag>
                             <el-tag v-else type="info">未知</el-tag>
-                            <span>{{ node.label }}</span>
+                            <el-tag type="info">{{ node.label }}</el-tag>
                         </span>
                     </template>
                 </el-tree>
