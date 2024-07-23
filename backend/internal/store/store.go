@@ -15,6 +15,7 @@ type Factory interface {
 	Users() UserStore
 	Roles() RoleStore
 	Menus() MenuStore
+	Departments() DepartmentStore
 }
 
 var client Factory

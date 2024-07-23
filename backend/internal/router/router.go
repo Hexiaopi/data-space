@@ -113,5 +113,14 @@ func InitRouter() *gin.Engine {
 		menuRouter.PUT("/:id", Wrap(menuController.Update))
 		menuRouter.DELETE("/:id", Wrap(menuController.Delete))
 	}
+
+	{
+		departmentController := v1.NewDepartMentController(srv)
+		departmentRouter := v1Router.Group("/departments")
+		departmentRouter.GET("", Wrap(departmentController.List))
+		departmentRouter.POST("", Wrap(departmentController.Create))
+		departmentRouter.PUT("/:id", Wrap(departmentController.Update))
+		departmentRouter.DELETE("/:id", Wrap(departmentController.Delete))
+	}
 	return router
 }

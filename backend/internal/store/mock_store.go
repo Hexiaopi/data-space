@@ -49,6 +49,20 @@ func (mr *MockFactoryMockRecorder) Close() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockFactory)(nil).Close))
 }
 
+// Departments mocks base method.
+func (m *MockFactory) Departments() DepartmentStore {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Departments")
+	ret0, _ := ret[0].(DepartmentStore)
+	return ret0
+}
+
+// Departments indicates an expected call of Departments.
+func (mr *MockFactoryMockRecorder) Departments() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Departments", reflect.TypeOf((*MockFactory)(nil).Departments))
+}
+
 // Menus mocks base method.
 func (m *MockFactory) Menus() MenuStore {
 	m.ctrl.T.Helper()
@@ -205,6 +219,25 @@ func (mr *MockRoleStoreMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockRoleStore)(nil).Create), arg0, arg1)
 }
 
+// CreateMenus mocks base method.
+func (m *MockRoleStore) CreateMenus(arg0 context.Context, arg1 int64, arg2 ...int64) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateMenus", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateMenus indicates an expected call of CreateMenus.
+func (mr *MockRoleStoreMockRecorder) CreateMenus(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateMenus", reflect.TypeOf((*MockRoleStore)(nil).CreateMenus), varargs...)
+}
+
 // Delete mocks base method.
 func (m *MockRoleStore) Delete(arg0 context.Context, arg1 int64) error {
 	m.ctrl.T.Helper()
@@ -217,6 +250,20 @@ func (m *MockRoleStore) Delete(arg0 context.Context, arg1 int64) error {
 func (mr *MockRoleStoreMockRecorder) Delete(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockRoleStore)(nil).Delete), arg0, arg1)
+}
+
+// DeleteMenus mocks base method.
+func (m *MockRoleStore) DeleteMenus(arg0 context.Context, arg1 int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteMenus", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteMenus indicates an expected call of DeleteMenus.
+func (mr *MockRoleStoreMockRecorder) DeleteMenus(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteMenus", reflect.TypeOf((*MockRoleStore)(nil).DeleteMenus), arg0, arg1)
 }
 
 // Get mocks base method.
@@ -316,6 +363,74 @@ func (m *MockMenuStore) EXPECT() *MockMenuStoreMockRecorder {
 	return m.recorder
 }
 
+// Create mocks base method.
+func (m *MockMenuStore) Create(arg0 context.Context, arg1 *model.Menu) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockMenuStoreMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockMenuStore)(nil).Create), arg0, arg1)
+}
+
+// Delete mocks base method.
+func (m *MockMenuStore) Delete(arg0 context.Context, arg1 int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockMenuStoreMockRecorder) Delete(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockMenuStore)(nil).Delete), arg0, arg1)
+}
+
+// Get mocks base method.
+func (m *MockMenuStore) Get(arg0 context.Context, arg1 ...Option) (*model.Menu, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0}
+	for _, a := range arg1 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*model.Menu)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockMenuStoreMockRecorder) Get(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0}, arg1...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockMenuStore)(nil).Get), varargs...)
+}
+
+// List mocks base method.
+func (m *MockMenuStore) List(arg0 context.Context, arg1 ...Option) ([]model.Menu, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0}
+	for _, a := range arg1 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "List", varargs...)
+	ret0, _ := ret[0].([]model.Menu)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockMenuStoreMockRecorder) List(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0}, arg1...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockMenuStore)(nil).List), varargs...)
+}
+
 // ListRoleMenus mocks base method.
 func (m *MockMenuStore) ListRoleMenus(arg0 context.Context, arg1 int64, arg2 ...Option) ([]model.Menu, error) {
 	m.ctrl.T.Helper()
@@ -334,4 +449,18 @@ func (mr *MockMenuStoreMockRecorder) ListRoleMenus(arg0, arg1 interface{}, arg2 
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRoleMenus", reflect.TypeOf((*MockMenuStore)(nil).ListRoleMenus), varargs...)
+}
+
+// Update mocks base method.
+func (m *MockMenuStore) Update(arg0 context.Context, arg1 *model.Menu) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockMenuStoreMockRecorder) Update(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockMenuStore)(nil).Update), arg0, arg1)
 }

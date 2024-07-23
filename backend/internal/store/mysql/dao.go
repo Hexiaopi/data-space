@@ -46,3 +46,7 @@ func (ds *datastore) Roles() store.RoleStore {
 func (ds *datastore) Menus() store.MenuStore {
 	return NewMenuDao(ds.db)
 }
+
+func (ds *datastore) Departments() store.DepartmentStore {
+	return NewDepartmentDao(ds.db)
+}

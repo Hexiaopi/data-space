@@ -35,4 +35,12 @@ var (
 	MenuUpdateFail = retcode.NewCode("000303", "Menu Update Fail")
 	MenuGetFail    = retcode.NewCode("000304", "Menu Found Fail")
 	MenuDeleteFail = retcode.NewCode("000307", "Menu Delete Fail")
+
+	DepartmentListFail   = retcode.NewCode("000401", "Department List Fail")
+	DepartmentCountFail  = retcode.NewCode("000402", "Department Count Fail")
+	DepartmentGetFail    = retcode.NewCode("000403", "Department Found Fail")
+	DepartmentNotExist   = retcode.NewCode("000404", "Department Not Exist")
+	DepartmentCreateFail = retcode.NewCode("000405", "Department Create Fail")
+	DepartmentUpdateFail = retcode.NewCode("000406", "Department Update Fail")
+	DepartmentDeleteFail = retcode.NewCode("000407", "Department Delete Fail")
 )
