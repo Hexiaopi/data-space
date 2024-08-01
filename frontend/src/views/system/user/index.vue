@@ -58,7 +58,7 @@
         <el-dialog :title="textMap[dialogStatus]" v-model="dialogFormVisible" style="width: 400px;">
             <el-form ref="dataForm" :model="temp" label-position="left" label-width="70px">
                 <el-form-item label="账户" prop="title">
-                    <el-input v-model="temp.name" disabled />
+                    <el-input v-model="temp.name" :disabled="dialogStatus === 'update'" />
                 </el-form-item>
                 <el-form-item label="姓名" prop="title">
                     <el-input v-model="temp.desc" />
