@@ -41,17 +41,28 @@ func (dao *UserDao) Create(ctx context.Context, user *model.User) error {
 }
 
 func (dao *UserDao) Update(ctx context.Context, user *model.User) error {
-	return dao.db.WithContext(ctx).Save(user).Error
+	return dao.db.WithContext(ctx).Model(&model.User{}).
+		Where("id = ?", user.ID).
+		Updates(map[string]interface{}{
+			"name":        user.Name,
+			"avatar":      user.Avatar,
+			"state":       user.State,
+			"update_time": time.Now(),
+		}).Error
 }
 
 func (dao *UserDao) Delete(ctx context.Context, id int64) error {
-	user := model.User{ID: id}
-	return dao.db.WithContext(ctx).Delete(&user).Error
+	return dao.db.WithContext(ctx).Model(&model.User{}).
+		Where("id = ?", id).
+		Updates(map[string]interface{}{
+			"state":       model.StateDelete,
+			"update_time": time.Now(),
+		}).Error
 }
 
 func (dao *UserDao) List(ctx context.Context, options ...store.Option) ([]model.User, error) {
 	users := make([]model.User, 0)
-	query := dao.db.WithContext(ctx).Model(&model.User{})
+	query := dao.db.WithContext(ctx).Model(&model.User{}).Joins("left join sys_department_user on sys_user.id = sys_department_user.user_id")
 	for _, option := range options {
 		option.(Option)(query)
 	}
@@ -63,7 +74,7 @@ func (dao *UserDao) List(ctx context.Context, options ...store.Option) ([]model.
 
 func (dao *UserDao) Count(ctx context.Context, options ...store.Option) (int64, error) {
 	var count int64
-	query := dao.db.WithContext(ctx).Model(&model.User{})
+	query := dao.db.WithContext(ctx).Model(&model.User{}).Joins("left join sys_department_user on sys_user.id = sys_department_user.user_id")
 	for _, option := range options {
 		option.(Option)(query)
 	}

@@ -1,5 +1,22 @@
 import request from "@/utils/request"
+import type { UserListResponse } from "./type"
 
 enum API {
-    Info_URL = "/api/v1/user",
+    User_URL = "/api/v1/users",
+}
+
+export const listUser = (params: any) => {
+    return request.get<any, UserListResponse>(API.User_URL, { params })
+}
+
+export const createUser = (data: any) => {
+    return request.post<any, any>(API.User_URL, data)
+}
+
+export const updateUser = (id: number, data: any) => {
+    return request.put<any, any>(`${API.User_URL}/${id}`, data)
+}
+
+export const deleteUser = (id: number) => {
+    return request.delete<any, any>(`${API.User_URL}/${id}`)
 }

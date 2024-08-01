@@ -1,4 +1,4 @@
-import type { User } from "@/api/user/type"
+import type { UserInfo } from "@/api/user/type"
 
 export interface LoginParams {
     username: string,
@@ -38,5 +38,5 @@ export interface MenuTreeResponse {
 export interface InfoResponse {
     code: string,
     desc: string,
-    data: User,
+    data: UserInfo,
 }

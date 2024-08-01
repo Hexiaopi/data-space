@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from '@/App.vue'
 // CSS common style sheet
 import "@/style/common.scss"
+import "@/style/element.scss"
 // element css
 import 'element-plus/dist/index.css'
 // element plus

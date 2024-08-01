@@ -64,3 +64,13 @@ func WithField(field string, value interface{}) Option {
 func (o Option) WithField(field string, value interface{}) store.Option {
 	return WithField(field, value)
 }
+
+func WithDepartmentId(departmentId int64) Option {
+	return func(db *gorm.DB) {
+		db.Where("department_id = ?", departmentId)
+	}
+}
+
+func (o Option) WithDepartmentId(departmentId int64) store.Option {
+	return WithDepartmentId(departmentId)
+}

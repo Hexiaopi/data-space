@@ -4,9 +4,10 @@ import (
 	"context"
 	"time"
 
+	"gorm.io/gorm"
+
 	"github.com/hexiaopi/data-space/internal/model"
 	"github.com/hexiaopi/data-space/internal/store"
-	"gorm.io/gorm"
 )
 
 type DepartmentDao struct {
@@ -81,4 +82,20 @@ func (dao *DepartmentDao) Delete(ctx context.Context, id int64) error {
 			"state":       model.StateDelete,
 			"update_time": time.Now(),
 		}).Error
+}
+
+func (dao *DepartmentDao) CreateUser(ctx context.Context, departmentId, userId int64) error {
+	var departmentUser = &model.DepartmentUser{
+		DepartmentId: departmentId,
+		UserId:       userId,
+		CreateTime:   time.Now(),
+	}
+	return dao.db.WithContext(ctx).Create(departmentUser).Error
+}
+
+func (dao *DepartmentDao) DeleteUser(ctx context.Context, departmentId, userId int64) error {
+	return dao.db.WithContext(ctx).Model(&model.DepartmentUser{}).
+		Where("department_id = ? and user_id = ?", departmentId, userId).
+		Delete(&model.DepartmentUser{}).
+		Error
 }

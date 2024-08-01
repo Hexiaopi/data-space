@@ -9,6 +9,7 @@ import (
 type User struct {
 	ID         int64
 	Name       string
+	Desc       string
 	Password   string
 	Avatar     string
 	CreateTime time.Time
