@@ -2,17 +2,18 @@ package app
 
 import (
 	"context"
-	"log"
 	"os"
 	"os/signal"
 	"sync"
 	"syscall"
 
+	"github.com/hexiaopi/data-space/pkg/logger"
 	"github.com/hexiaopi/data-space/pkg/server"
 )
 
 type App struct {
 	name    string
+	log     logger.Logger
 	servers []server.Server
 }
 
@@ -38,6 +39,12 @@ func WithName(name string) Option {
 	}
 }
 
+func WithLogger(log logger.Logger) Option {
+	return func(a *App) {
+		a.log = log
+	}
+}
+
 func (a *App) Run() error {
 	ctx, cancel := context.WithCancel(context.Background())
 
@@ -60,7 +67,7 @@ func (a *App) Run() error {
 
 	select {
 	case <-signals:
-		log.Println("Received termination signal")
+		a.log.Info("Received termination signal")
 		cancel()
 	case err := <-errChan:
 		cancel()

@@ -2,14 +2,15 @@ package config
 
 import (
 	"fmt"
-	"log/slog"
 	"os"
 
 	"gopkg.in/yaml.v3"
 )
 
 type config struct {
+	HTTP  HttpConfig  `yaml:"http"`
 	MySQL MySQLConfig `yaml:"mysql"`
+	Log   LogConfig   `yaml:"log"`
 	JWT   JWTConfig   `yaml:"jwt"`
 }
 
@@ -27,9 +28,9 @@ func Init(path string) error {
 	if err != nil {
 		return err
 	}
+	Logger = conf.Log.NewLog()
+	HTTP = conf.HTTP
 	conf.JWT.Init()
-	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{AddSource: true}))
-	slog.SetDefault(logger)
 	return nil
 }
 

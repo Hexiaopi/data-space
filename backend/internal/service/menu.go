@@ -2,12 +2,12 @@ package service
 
 import (
 	"context"
-	"log"
 
 	"github.com/hexiaopi/data-space/internal/entity"
 	"github.com/hexiaopi/data-space/internal/global"
 	"github.com/hexiaopi/data-space/internal/model"
 	"github.com/hexiaopi/data-space/internal/store"
+	"github.com/hexiaopi/data-space/pkg/logger"
 )
 
 type MenuSrv interface {
@@ -22,12 +22,14 @@ type MenuSrv interface {
 type MenuService struct {
 	store  store.Factory
 	option store.Option
+	log    logger.Logger
 }
 
-func NewMenuService(store store.Factory, option store.Option) *MenuService {
+func NewMenuService(store store.Factory, option store.Option, log logger.Logger) *MenuService {
 	return &MenuService{
 		store:  store,
 		option: option,
+		log:    log,
 	}
 }
 
@@ -42,12 +44,12 @@ func (svc *MenuService) AclTree(ctx context.Context, param *AclMenuTreeRequest) 
 	options = append(options, svc.option.WithId(param.UserId))
 	user, err := svc.store.Users().Get(ctx, options...)
 	if err != nil {
-		log.Println(err)
+		svc.log.Errorf("store user get err: %v", err)
 		return nil, global.UserGetFail
 	}
 	roles, err := svc.store.Roles().ListUserRoles(ctx, user.ID)
 	if err != nil {
-		log.Println(err)
+		svc.log.Errorf("store list user roles err: %v", err)
 		return nil, global.RoleListFail
 	}
 	if len(roles) == 0 {
@@ -55,7 +57,7 @@ func (svc *MenuService) AclTree(ctx context.Context, param *AclMenuTreeRequest) 
 	}
 	menus, err := svc.store.Menus().ListRoleMenus(ctx, roles[0].ID)
 	if err != nil {
-		log.Println(err)
+		svc.log.Errorf("store list role menus err: %v", err)
 		return nil, global.MenuTreeFail
 	}
 	tree := entity.GenerateMenuTree(menus)
@@ -75,7 +77,7 @@ func (svc *MenuService) Tree(ctx context.Context, param *MenuTreeRequest) (*Menu
 	options = append(options, svc.option.WithState(model.StateEnable))
 	menus, err := svc.store.Menus().List(ctx, options...)
 	if err != nil {
-		log.Println(err)
+		svc.log.Errorf("store menu list err: %v", err)
 		return nil, global.MenuTreeFail
 	}
 	tree := entity.GenerateMenuTree(menus)
@@ -111,7 +113,7 @@ func (svc *MenuService) Create(ctx context.Context, param *MenuCreateRequest) er
 	menu.ParentId = param.ParentId
 	menu.State = model.StateEnable
 	if err := svc.store.Menus().Create(ctx, &menu); err != nil {
-		log.Println(err)
+		svc.log.Errorf("store menu create err: %v", err)
 		return global.MenuCreateFail
 	}
 	return nil
@@ -124,7 +126,7 @@ type MenuUpdateRequest struct {
 func (svc *MenuService) Update(ctx context.Context, id int64, param *MenuUpdateRequest) error {
 	menu, err := svc.store.Menus().Get(ctx, svc.option.WithId(id))
 	if err != nil {
-		log.Println(err)
+		svc.log.Errorf("store menu get err: %v", err)
 		return global.MenuGetFail
 	}
 	menu.Name = param.Name
@@ -135,7 +137,7 @@ func (svc *MenuService) Update(ctx context.Context, id int64, param *MenuUpdateR
 	menu.Type = param.Type
 	menu.Order = param.Order
 	if err := svc.store.Menus().Update(ctx, menu); err != nil {
-		log.Println(err)
+		svc.log.Errorf("store menu update err: %v", err)
 		return global.MenuUpdateFail
 	}
 	return nil
@@ -143,7 +145,7 @@ func (svc *MenuService) Update(ctx context.Context, id int64, param *MenuUpdateR
 
 func (svc *MenuService) Delete(ctx context.Context, id int64) error {
 	if err := svc.store.Menus().Delete(ctx, id); err != nil {
-		log.Println(err)
+		svc.log.Errorf("store menu delete err: %v", err)
 		return global.MenuDeleteFail
 	}
 	return nil

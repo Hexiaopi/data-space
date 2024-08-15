@@ -2,12 +2,12 @@ package service
 
 import (
 	"context"
-	"log"
 
 	"github.com/hexiaopi/data-space/internal/entity"
 	"github.com/hexiaopi/data-space/internal/global"
 	"github.com/hexiaopi/data-space/internal/model"
 	"github.com/hexiaopi/data-space/internal/store"
+	"github.com/hexiaopi/data-space/pkg/logger"
 )
 
 type RoleSrv interface {
@@ -23,12 +23,14 @@ type RoleSrv interface {
 type RoleService struct {
 	store  store.Factory
 	option store.Option
+	log    logger.Logger
 }
 
-func NewRoleService(store store.Factory, option store.Option) *RoleService {
+func NewRoleService(store store.Factory, option store.Option, log logger.Logger) *RoleService {
 	return &RoleService{
 		store:  store,
 		option: option,
+		log:    log,
 	}
 }
 
@@ -44,7 +46,7 @@ func (svc *RoleService) Create(ctx context.Context, req *RoleCreateRequest) erro
 	role.Desc = req.Desc
 	role.State = req.State
 	if err := svc.store.Roles().Create(ctx, &role); err != nil {
-		log.Println(err)
+		svc.log.Errorf("store role create err:%v", err)
 		return global.RoleCreateFail
 	}
 	return nil
@@ -59,14 +61,14 @@ type RoleUpdateRequest struct {
 func (svc *RoleService) Update(ctx context.Context, id int64, req *RoleUpdateRequest) error {
 	role, err := svc.store.Roles().Get(ctx, svc.option.WithId(id))
 	if err != nil {
-		log.Println(err)
+		svc.log.Errorf("store role get err:%v", err)
 		return global.RoleGetFail
 	}
 	role.Name = req.Name
 	role.Desc = req.Desc
 	role.State = req.State
 	if err := svc.store.Roles().Update(ctx, role); err != nil {
-		log.Println(err)
+		svc.log.Errorf("store role update err:%v", err)
 		return global.RoleUpdateFail
 	}
 	return nil
@@ -74,7 +76,7 @@ func (svc *RoleService) Update(ctx context.Context, id int64, req *RoleUpdateReq
 
 func (svc *RoleService) Delete(ctx context.Context, id int64) error {
 	if err := svc.store.Roles().Delete(ctx, id); err != nil {
-		log.Println(err)
+		svc.log.Errorf("store role delete err:%v", err)
 		return global.RoleDeleteFail
 	}
 	return nil
@@ -103,7 +105,7 @@ func (svc *RoleService) List(ctx context.Context, req *RoleListRequest) (*RoleLi
 	}
 	count, err := svc.store.Roles().Count(ctx, options...)
 	if err != nil {
-		log.Println(err)
+		svc.log.Errorf("store role count err:%v", err)
 		return nil, global.RoleCountFail
 	}
 	if count == 0 {
@@ -112,7 +114,7 @@ func (svc *RoleService) List(ctx context.Context, req *RoleListRequest) (*RoleLi
 	options = append(options, svc.option.WithPage(req.PageNum, req.PageSize))
 	roles, err := svc.store.Roles().List(ctx, options...)
 	if err != nil {
-		log.Println(err)
+		svc.log.Errorf("store role list err:%v", err)
 		return nil, global.RoleListFail
 	}
 	res.Roles = entity.ToRoles(roles)
@@ -131,14 +133,14 @@ func (svc *RoleService) Get(ctx context.Context, id int64) (*RoleGetResponse, er
 	options = append(options, svc.option.WithId(id))
 	role, err := svc.store.Roles().Get(ctx, options...)
 	if err != nil {
-		log.Println(err)
+		svc.log.Errorf("store role get err:%v", err)
 		return nil, global.RoleGetFail
 	}
 	res.Role = entity.ToRole(*role)
 
 	menus, err := svc.store.Menus().ListRoleMenus(ctx, id, svc.option.WithState(model.StateEnable))
 	if err != nil {
-		log.Println(err)
+		svc.log.Errorf("store menu list err:%v", err)
 		return nil, global.MenuTreeFail
 	}
 
@@ -154,12 +156,12 @@ type UpdateMenuRequest struct {
 func (svc *RoleService) UpdateMenu(ctx context.Context, id int64, param *UpdateMenuRequest) error {
 	return svc.store.Tx(ctx, func(ctx context.Context, factory store.Factory) error {
 		if err := factory.Roles().DeleteMenus(ctx, id); err != nil {
-			log.Println(err)
+			svc.log.Errorf("store role delete menu err:%v", err)
 			return global.RoleDeleteMenuFail
 		}
 		if len(param.MenuIds) > 0 {
 			if err := factory.Roles().CreateMenus(ctx, id, param.MenuIds...); err != nil {
-				log.Println(err)
+				svc.log.Errorf("store role create menu err:%v", err)
 				return global.RoleCreateMenuFail
 			}
 		}
@@ -170,7 +172,7 @@ func (svc *RoleService) UpdateMenu(ctx context.Context, id int64, param *UpdateM
 func (svc *RoleService) GetMenu(ctx context.Context, id int64) (*entity.MenuTree, error) {
 	menus, err := svc.store.Menus().ListRoleMenus(ctx, id, svc.option.WithState(model.StateEnable))
 	if err != nil {
-		log.Println(err)
+		svc.log.Errorf("store menu list err:%v", err)
 		return nil, global.MenuTreeFail
 	}
 	tree := entity.GenerateMenuTree(menus)

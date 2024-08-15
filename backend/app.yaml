@@ -1,3 +1,8 @@
+http:
+  host: 0.0.0.0
+  port: 8080
+  timeout: 10s
+
 mysql:
   username: root
   password: 930619
@@ -14,3 +19,15 @@ jwt:
   secret: hexiaopi
   issuer: data-space
   expire: 1h
+
+log:
+  file-name: ./logs/app.log
+  log-level: debug
+  max-size: 30 
+  max-backup: 3
+  max-age: 7 
+  compress: false
+  encoding: json
+  dev: dev
+
+

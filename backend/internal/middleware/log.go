@@ -3,11 +3,12 @@ package middleware
 import (
 	"bytes"
 	"io"
-	log "log/slog"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
+
+	log "github.com/hexiaopi/data-space/pkg/logger"
 )
 
 type ResponseWithRecorder struct {
@@ -31,7 +32,7 @@ func (rec *ResponseWithRecorder) Write(d []byte) (n int, err error) {
 }
 
 // Logger 日志记录
-func Logger(skippers ...SkipperFunc) gin.HandlerFunc {
+func Logger(logger log.Logger, skippers ...SkipperFunc) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if SkipHandler(c, skippers...) {
 			c.Next()
@@ -43,7 +44,7 @@ func Logger(skippers ...SkipperFunc) gin.HandlerFunc {
 		rdr := io.NopCloser(bytes.NewBuffer(buf))
 		c.Request.Body = rdr //rewrite
 
-		log.Info("receive request",
+		logger.Info("receive request",
 			log.String("path", c.Request.URL.Path),
 			log.String("param", c.Request.URL.RawQuery),
 			log.String("method", c.Request.Method),
@@ -61,7 +62,7 @@ func Logger(skippers ...SkipperFunc) gin.HandlerFunc {
 		c.Next()
 
 		defer func() { //日志记录扫尾工作
-			log.Info("done request",
+			logger.Info("done request",
 				log.String("path", c.Request.URL.Path),
 				log.Int("status", wc.statusCode),
 				log.String("respkg", wc.body.String()),

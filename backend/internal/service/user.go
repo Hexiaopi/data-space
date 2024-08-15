@@ -2,13 +2,13 @@ package service
 
 import (
 	"context"
-	log "log/slog"
 
 	"github.com/hexiaopi/data-space/internal/entity"
 	"github.com/hexiaopi/data-space/internal/global"
 	"github.com/hexiaopi/data-space/internal/model"
 	"github.com/hexiaopi/data-space/internal/store"
 	"github.com/hexiaopi/data-space/pkg/jwt"
+	"github.com/hexiaopi/data-space/pkg/logger"
 )
 
 type UserSrv interface {
@@ -24,13 +24,15 @@ type UserService struct {
 	store  store.Factory
 	option store.Option
 	jwt    jwt.JWT
+	log    logger.Logger
 }
 
-func NewUserService(store store.Factory, option store.Option, jwt jwt.JWT) *UserService {
+func NewUserService(store store.Factory, option store.Option, jwt jwt.JWT, log logger.Logger) *UserService {
 	return &UserService{
 		store:  store,
 		option: option,
 		jwt:    jwt,
+		log:    log,
 	}
 }
 
@@ -48,7 +50,7 @@ func (svc *UserService) Login(ctx context.Context, param *LoginRequest) (*LoginR
 	options = append(options, svc.option.WithName(param.UserName))
 	user, err := svc.store.Users().Get(ctx, options...)
 	if err != nil {
-		log.Error("store user get", err)
+		svc.log.Errorf("store user get err: %v", err)
 		return nil, global.UserGetFail
 	}
 	if user == nil {
@@ -59,7 +61,7 @@ func (svc *UserService) Login(ctx context.Context, param *LoginRequest) (*LoginR
 	}
 	token, err := svc.jwt.GenerateToken(user.ID, user.Name, user.Password)
 	if err != nil {
-		log.Error("jwt generate token", err)
+		svc.log.Errorf("jwt generate token err: %v", err)
 		return nil, global.JWTGenerateTokenFail
 	}
 	return &LoginResponse{AccessToken: token}, nil
@@ -75,6 +77,7 @@ func (svc *UserService) Info(ctx context.Context) (*InfoResponse, error) {
 	options = append(options, svc.option.WithId(userId))
 	user, err := svc.store.Users().Get(ctx, options...)
 	if err != nil {
+		svc.log.Errorf("store user get err: %v", err)
 		return nil, global.UserGetFail
 	}
 	if user == nil {
@@ -91,6 +94,7 @@ func (svc *UserService) Info(ctx context.Context) (*InfoResponse, error) {
 	}}
 	roles, err := svc.store.Roles().ListUserRoles(ctx, userId)
 	if err != nil {
+		svc.log.Errorf("store list user roles err: %v", err)
 		return nil, global.RoleGetFail
 	}
 	if roles == nil {
@@ -128,22 +132,22 @@ func (svc *UserService) Create(ctx context.Context, req *CreateUserRequest) erro
 			State:    req.State,
 		}
 		if err := user.EncryptPassword(); err != nil {
-			log.Error("user encrypt password", err)
+			svc.log.Errorf("user encrypt password err: %v", err)
 			return global.UserEncryptPasswordFail
 		}
 		if err := factory.Users().Create(ctx, user); err != nil {
-			log.Error("store user create", err)
+			svc.log.Errorf("store user create err: %v", err)
 			return err
 		}
 		if req.DepartmentId > 0 {
 			if err := factory.Departments().CreateUser(ctx, req.DepartmentId, user.ID); err != nil {
-				log.Error("store department create user", err)
+				svc.log.Errorf("store department create user err: %v", err)
 				return global.DepartmentCreateUserFail
 			}
 		}
 		return nil
 	}); err != nil {
-		log.Error("store create user err:", err)
+		svc.log.Errorf("store tx err: %v", err)
 		return global.UserCreateFail
 	}
 	return nil
@@ -167,11 +171,11 @@ func (svc *UserService) Update(ctx context.Context, req *UpdateUserRequest) erro
 		State:  req.State,
 	}
 	if err := user.EncryptPassword(); err != nil {
-		log.Error("user encrypt password", err)
+		svc.log.Errorf("user encrypt password err: %v", err)
 		return global.UserEncryptPasswordFail
 	}
 	if err := svc.store.Users().Update(ctx, user); err != nil {
-		log.Error("store user update", err)
+		svc.log.Errorf("store user update err: %v", err)
 		return global.UserUpdateFail
 	}
 	return nil
@@ -183,7 +187,7 @@ type DeleteUserRequest struct {
 
 func (svc *UserService) Delete(ctx context.Context, req *DeleteUserRequest) error {
 	if err := svc.store.Users().Delete(ctx, req.Id); err != nil {
-		log.Error("store user delete", err)
+		svc.log.Errorf("store user delete err: %v", err)
 		return global.UserDeleteFail
 	}
 	return nil
@@ -216,7 +220,7 @@ func (svc *UserService) List(ctx context.Context, req *ListUserRequest) (*ListUs
 	}
 	count, err := svc.store.Users().Count(ctx, options...)
 	if err != nil {
-		log.Error("count user err:", err)
+		svc.log.Errorf("store user count err: %v", err)
 		return nil, global.UserCountFail
 	}
 	if count == 0 {
@@ -225,7 +229,7 @@ func (svc *UserService) List(ctx context.Context, req *ListUserRequest) (*ListUs
 	options = append(options, svc.option.WithPage(req.PageNum, req.PageSize))
 	users, err := svc.store.Users().List(ctx, options...)
 	if err != nil {
-		log.Error("list user err:", err)
+		svc.log.Errorf("store user list err: %v", err)
 		return nil, global.UserListFail
 	}
 	res.List = entity.ToUsers(users)

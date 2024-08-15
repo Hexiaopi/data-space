@@ -2,12 +2,12 @@ package service
 
 import (
 	"context"
-	"log"
 
 	"github.com/hexiaopi/data-space/internal/entity"
 	"github.com/hexiaopi/data-space/internal/global"
 	"github.com/hexiaopi/data-space/internal/model"
 	"github.com/hexiaopi/data-space/internal/store"
+	"github.com/hexiaopi/data-space/pkg/logger"
 )
 
 type DepartmentSrv interface {
@@ -20,12 +20,14 @@ type DepartmentSrv interface {
 type DepartmentService struct {
 	store  store.Factory
 	option store.Option
+	log    logger.Logger
 }
 
-func NewDepartmentService(store store.Factory, option store.Option) *DepartmentService {
+func NewDepartmentService(store store.Factory, option store.Option, log logger.Logger) *DepartmentService {
 	return &DepartmentService{
 		store:  store,
 		option: option,
+		log:    log,
 	}
 }
 
@@ -52,7 +54,7 @@ func (svc *DepartmentService) List(ctx context.Context, req *DepartmentListReque
 	}
 	count, err := svc.store.Departments().Count(ctx, options...)
 	if err != nil {
-		log.Println(err)
+		svc.log.Errorf("store department count", err)
 		return nil, global.DepartmentCountFail
 	}
 	if count == 0 {
@@ -61,7 +63,7 @@ func (svc *DepartmentService) List(ctx context.Context, req *DepartmentListReque
 	options = append(options, svc.option.WithPage(req.PageNum, req.PageSize))
 	departments, err := svc.store.Departments().List(ctx, options...)
 	if err != nil {
-		log.Println(err)
+		svc.log.Errorf("store department list", err)
 		return nil, global.DepartmentListFail
 	}
 	res.List = entity.ToDepartments(departments)
@@ -81,7 +83,7 @@ func (svc *DepartmentService) Create(ctx context.Context, req *DepartmentCreateR
 	department.Desc = req.Desc
 	department.State = req.State
 	if err := svc.store.Departments().Create(ctx, &department); err != nil {
-		log.Println(err)
+		svc.log.Errorf("store department create", err)
 		return global.DepartmentCreateFail
 	}
 	return nil
@@ -96,14 +98,14 @@ type DepartmentUpdateRequest struct {
 func (svc *DepartmentService) Update(ctx context.Context, id int64, req *DepartmentUpdateRequest) error {
 	department, err := svc.store.Departments().Get(ctx, svc.option.WithId(id))
 	if err != nil {
-		log.Println(err)
+		svc.log.Errorf("store department get", err)
 		return global.DepartmentGetFail
 	}
 	department.Name = req.Name
 	department.Desc = req.Desc
 	department.State = req.State
 	if err := svc.store.Departments().Update(ctx, department); err != nil {
-		log.Println(err)
+		svc.log.Errorf("store department update", err)
 		return global.DepartmentUpdateFail
 	}
 	return nil
@@ -111,7 +113,7 @@ func (svc *DepartmentService) Update(ctx context.Context, id int64, req *Departm
 
 func (svc *DepartmentService) Delete(ctx context.Context, id int64) error {
 	if err := svc.store.Departments().Delete(ctx, id); err != nil {
-		log.Println(err)
+		svc.log.Errorf("store department delete", err)
 		return global.DepartmentDeleteFail
 	}
 	return nil

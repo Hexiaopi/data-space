@@ -65,14 +65,15 @@ func InitRouter() *gin.Engine {
 	router.NoRoute(Wrap(api.PathNotFound))
 
 	apiRouter := router.Group("/api")
+	apiRouter.Use(middleware.Recovery(config.Logger))
 	apiRouter.Use(middleware.Metrics())
 	apiRouter.Use(middleware.Cors())
-	apiRouter.Use(middleware.Logger())
+	apiRouter.Use(middleware.Logger(config.Logger))
 	apiRouter.Use(middleware.JWT(config.JWT, middleware.PathContainSkipper("login")))
 
 	v1Router := apiRouter.Group("/v1")
 
-	srv := service.NewService(storeIns, optionIns, config.JWT)
+	srv := service.NewService(storeIns, optionIns, config.JWT, config.Logger)
 
 	{
 		aclController := v1.NewAclController(srv)

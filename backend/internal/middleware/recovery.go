@@ -1,17 +1,18 @@
 package middleware
 
 import (
-	log "log/slog"
 	"runtime/debug"
 
 	"github.com/gin-gonic/gin"
+
+	"github.com/hexiaopi/data-space/pkg/logger"
 )
 
-func Recovery() gin.HandlerFunc {
+func Recovery(log logger.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer func() {
 			if err := recover(); err != nil {
-				log.Error("panic error %v", err)
+				log.Errorf("panic error %v", err)
 				log.Error(string(debug.Stack()))
 				ReturnError(c, err.(error))
 			}

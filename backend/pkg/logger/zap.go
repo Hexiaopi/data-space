@@ -1,4 +1,4 @@
-package zap
+package logger
 
 import (
 	"os"
@@ -8,8 +8,6 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
-
-	log "github.com/hexiaopi/data-space/pkg/logger"
 )
 
 type zapLogger struct {
@@ -27,13 +25,13 @@ type Config struct {
 	Env       string
 }
 
-var Std log.Logger
+var Std Logger
 
 func init() {
 	Std = New(&Config{LogLevel: "info", Encoding: "console", Env: "dev"})
 }
 
-func New(conf *Config) log.Logger {
+func New(conf *Config) Logger {
 	lv := conf.LogLevel
 	var level zapcore.Level
 	switch strings.ToLower(lv) {
@@ -126,7 +124,7 @@ func timeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 //		}
 //		return l
 //	}
-func (l *zapLogger) Debug(msg string, fields ...log.Field) {
+func (l *zapLogger) Debug(msg string, fields ...Field) {
 	l.zapLogger.Debug(msg, fields...)
 }
 
@@ -134,7 +132,7 @@ func (l *zapLogger) Debugf(format string, args ...interface{}) {
 	l.zapLogger.Sugar().Debugf(format, args...)
 }
 
-func (l *zapLogger) Info(msg string, fields ...log.Field) {
+func (l *zapLogger) Info(msg string, fields ...Field) {
 	l.zapLogger.Info(msg, fields...)
 }
 
@@ -142,7 +140,7 @@ func (l *zapLogger) Infof(format string, args ...interface{}) {
 	l.zapLogger.Sugar().Infof(format, args...)
 }
 
-func (l *zapLogger) Warn(msg string, fields ...log.Field) {
+func (l *zapLogger) Warn(msg string, fields ...Field) {
 	l.zapLogger.Warn(msg, fields...)
 }
 
@@ -150,7 +148,7 @@ func (l *zapLogger) Warnf(format string, args ...interface{}) {
 	l.zapLogger.Sugar().Warnf(format, args...)
 }
 
-func (l *zapLogger) Error(msg string, fields ...log.Field) {
+func (l *zapLogger) Error(msg string, fields ...Field) {
 	l.zapLogger.Error(msg, fields...)
 }
 
@@ -158,7 +156,7 @@ func (l *zapLogger) Errorf(format string, args ...interface{}) {
 	l.zapLogger.Sugar().Errorf(format, args...)
 }
 
-func (l *zapLogger) Panic(msg string, fields ...log.Field) {
+func (l *zapLogger) Panic(msg string, fields ...Field) {
 	l.zapLogger.Panic(msg, fields...)
 }
 
@@ -166,7 +164,7 @@ func (l *zapLogger) Panicf(format string, args ...interface{}) {
 	l.zapLogger.Sugar().Panicf(format, args...)
 }
 
-func (l *zapLogger) Fatal(msg string, fields ...log.Field) {
+func (l *zapLogger) Fatal(msg string, fields ...Field) {
 	l.zapLogger.Fatal(msg, fields...)
 }
 

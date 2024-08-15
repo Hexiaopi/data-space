@@ -8,12 +8,13 @@ import (
 	"sync"
 	"time"
 
-	log "log/slog"
+	"github.com/hexiaopi/data-space/pkg/logger"
 )
 
 type Server struct {
 	engine  *http.Server
 	handler http.Handler
+	log     logger.Logger
 	host    string
 	port    int
 }
@@ -39,27 +40,33 @@ func WithServerPort(port int) Option {
 	}
 }
 
+func WithLogger(log logger.Logger) Option {
+	return func(s *Server) {
+		s.log = log
+	}
+}
+
 func (s *Server) Start(ctx context.Context) error {
 	s.engine = &http.Server{
 		Addr:    fmt.Sprintf("%s:%d", s.host, s.port),
 		Handler: s.handler,
 	}
-	log.Info("Server is running on %s:%d", s.host, s.port)
+	s.log.Infof("Server is running on %s:%d", s.host, s.port)
 	if err := s.engine.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		log.Error("listen: %s\n", err)
+		s.log.Errorf("listen: %s\n", err)
 		return err
 	}
 	return nil
 }
 
 func (s *Server) Stop() error {
-	log.Info("Shutting down server...")
+	s.log.Info("Shutting down server...")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := s.engine.Shutdown(ctx); err != nil {
-		log.Error("Server forced to shutdown err:%", err)
+		s.log.Errorf("Server forced to shutdown err:%", err)
 	}
-	log.Info("Server exiting")
+	s.log.Info("Server exiting")
 	return nil
 }
 

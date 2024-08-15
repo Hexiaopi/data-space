@@ -13,6 +13,7 @@ import (
 	"github.com/hexiaopi/data-space/internal/store"
 	"github.com/hexiaopi/data-space/internal/store/mysql"
 	"github.com/hexiaopi/data-space/pkg/jwt"
+	"github.com/hexiaopi/data-space/pkg/logger"
 )
 
 func TestUserService_LoginSuccess(t *testing.T) {
@@ -25,7 +26,7 @@ func TestUserService_LoginSuccess(t *testing.T) {
 	mockFactory := store.NewMockFactory(ctrl)
 	mockFactory.EXPECT().Users().Return(userStore).AnyTimes()
 
-	userSrv := NewUserService(mockFactory, mysql.NewOption(), jwt.NewJWT(time.Hour, "data-space", "hexiaopi"))
+	userSrv := NewUserService(mockFactory, mysql.NewOption(), jwt.NewJWT(time.Hour, "data-space", "hexiaopi"), logger.Std)
 	resp, err := userSrv.Login(context.Background(), &LoginRequest{"admin", "123456"})
 	if err != nil {
 		t.Fatal(err)
@@ -44,7 +45,7 @@ func TestUserService_LoginPasswordWrong(t *testing.T) {
 	mockFactory := store.NewMockFactory(ctrl)
 	mockFactory.EXPECT().Users().Return(userStore).AnyTimes()
 
-	userSrv := NewUserService(mockFactory, mysql.NewOption(), jwt.NewJWT(time.Hour, "data-space", "hexiaopi"))
+	userSrv := NewUserService(mockFactory, mysql.NewOption(), jwt.NewJWT(time.Hour, "data-space", "hexiaopi"), logger.Std)
 	_, err := userSrv.Login(context.Background(), &LoginRequest{"admin", "123456"})
 	t.Log(err)
 	if !errors.Is(err, global.UserPassWordWrong) {
@@ -63,7 +64,7 @@ func TestUserService_LoginUserNotExist(t *testing.T) {
 	mockFactory := store.NewMockFactory(ctrl)
 	mockFactory.EXPECT().Users().Return(userStore).AnyTimes()
 
-	userSrv := NewUserService(mockFactory, mysql.NewOption(), jwt.NewJWT(time.Hour, "data-space", "hexiaopi"))
+	userSrv := NewUserService(mockFactory, mysql.NewOption(), jwt.NewJWT(time.Hour, "data-space", "hexiaopi"), logger.Std)
 	_, err := userSrv.Login(context.Background(), &LoginRequest{"admin", "123456"})
 	t.Log(err)
 	if !errors.Is(err, global.UserNotExist) {
