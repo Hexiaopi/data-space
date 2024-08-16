@@ -28,6 +28,6 @@ log:
   max-age: 7 
   compress: false
   encoding: json
-  dev: dev
+  env: dev
 
 

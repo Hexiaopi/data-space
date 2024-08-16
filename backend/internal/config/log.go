@@ -5,14 +5,14 @@ import (
 )
 
 type LogConfig struct {
-	FileName  string `mapstructure:"filename"`  // 日志文件名称
-	LogLevel  string `mapstructure:"log-level"` // debug, info, warn, error, fatal, panic
-	MaxSize   int    `mapstructure:"max-size"`  // 日志文件最大大小
-	MaxAge    int    `mapstructure:"max-age"`   // 日志文件最大保存时间
-	MaxBackup int    `mapstructure:"max-back"`  // 日志文件最大保存数量
-	Compress  bool   `mapstructure:"compress"`  // 是否压缩日志文件
-	Encoding  string `mapstructure:"encoding"`  // console, json
-	Env       string `mapstructure:"env"`       // 日志文件环境
+	FileName  string `yaml:"file-name"` // 日志文件名称
+	LogLevel  string `yaml:"log-level"` // debug, info, warn, error, fatal, panic
+	MaxSize   int    `yaml:"max-size"`  // 日志文件最大大小
+	MaxAge    int    `yaml:"max-age"`   // 日志文件最大保存时间
+	MaxBackup int    `yaml:"max-back"`  // 日志文件最大保存数量
+	Compress  bool   `yaml:"compress"`  // 是否压缩日志文件
+	Encoding  string `yaml:"encoding"`  // console, json
+	Env       string `yaml:"env"`       // 日志文件环境
 
 }
 

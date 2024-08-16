@@ -44,13 +44,6 @@ func Logger(logger log.Logger, skippers ...SkipperFunc) gin.HandlerFunc {
 		rdr := io.NopCloser(bytes.NewBuffer(buf))
 		c.Request.Body = rdr //rewrite
 
-		logger.Info("receive request",
-			log.String("path", c.Request.URL.Path),
-			log.String("param", c.Request.URL.RawQuery),
-			log.String("method", c.Request.Method),
-			log.String("reqpkg", string(buf)),
-		)
-
 		//记录返回包
 		wc := &ResponseWithRecorder{
 			ResponseWriter: c.Writer,
@@ -62,9 +55,12 @@ func Logger(logger log.Logger, skippers ...SkipperFunc) gin.HandlerFunc {
 		c.Next()
 
 		defer func() { //日志记录扫尾工作
-			logger.Info("done request",
+			logger.Info("api request",
 				log.String("path", c.Request.URL.Path),
+				log.String("param", c.Request.URL.RawQuery),
+				log.String("method", c.Request.Method),
 				log.Int("status", wc.statusCode),
+				log.String("reqpkg", string(buf)),
 				log.String("respkg", wc.body.String()),
 				log.String("utm", time.Since(start).String()),
 			)
