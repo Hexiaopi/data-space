@@ -43,7 +43,7 @@ func (c *RoleController) List(ctx *gin.Context) (interface{}, error) {
 			req.State = uint8(s)
 		}
 	}
-	res, err := c.srv.Roles().List(ctx, &req)
+	res, err := c.srv.Roles().List(ctx.Request.Context(), &req)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func (c *RoleController) Create(ctx *gin.Context) (interface{}, error) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		return nil, global.RequestUnMarshalError
 	}
-	err := c.srv.Roles().Create(ctx, &req)
+	err := c.srv.Roles().Create(ctx.Request.Context(), &req)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (c *RoleController) Update(ctx *gin.Context) (interface{}, error) {
 		return nil, global.RequestUnMarshalError
 	}
 	id, _ := strconv.ParseInt(ctx.Param("id"), 10, 64)
-	err := c.srv.Roles().Update(ctx, id, &req)
+	err := c.srv.Roles().Update(ctx.Request.Context(), id, &req)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +77,7 @@ func (c *RoleController) Update(ctx *gin.Context) (interface{}, error) {
 
 func (c *RoleController) Delete(ctx *gin.Context) (interface{}, error) {
 	id, _ := strconv.ParseInt(ctx.Param("id"), 10, 64)
-	err := c.srv.Roles().Delete(ctx, id)
+	err := c.srv.Roles().Delete(ctx.Request.Context(), id)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +86,7 @@ func (c *RoleController) Delete(ctx *gin.Context) (interface{}, error) {
 
 func (c *RoleController) Get(ctx *gin.Context) (interface{}, error) {
 	id, _ := strconv.ParseInt(ctx.Param("id"), 10, 64)
-	res, err := c.srv.Roles().Get(ctx, id)
+	res, err := c.srv.Roles().Get(ctx.Request.Context(), id)
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +95,7 @@ func (c *RoleController) Get(ctx *gin.Context) (interface{}, error) {
 
 func (c *RoleController) GetMenu(ctx *gin.Context) (interface{}, error) {
 	id, _ := strconv.ParseInt(ctx.Param("id"), 10, 64)
-	res, err := c.srv.Roles().GetMenu(ctx, id)
+	res, err := c.srv.Roles().GetMenu(ctx.Request.Context(), id)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +108,7 @@ func (c *RoleController) UpdateMenu(ctx *gin.Context) (interface{}, error) {
 		return nil, global.RequestUnMarshalError
 	}
 	id, _ := strconv.ParseInt(ctx.Param("id"), 10, 64)
-	if err := c.srv.Roles().UpdateMenu(ctx, id, &req); err != nil {
+	if err := c.srv.Roles().UpdateMenu(ctx.Request.Context(), id, &req); err != nil {
 		return nil, err
 	}
 	return nil, nil

@@ -13,7 +13,7 @@ import (
 
 type UserSrv interface {
 	Login(ctx context.Context, param *LoginRequest) (*LoginResponse, error)
-	Info(ctx context.Context) (*InfoResponse, error)
+	Info(ctx context.Context, id int64) (*InfoResponse, error)
 	Create(ctx context.Context, param *CreateUserRequest) error
 	Update(ctx context.Context, param *UpdateUserRequest) error
 	Delete(ctx context.Context, param *DeleteUserRequest) error
@@ -71,8 +71,7 @@ type InfoResponse struct {
 	entity.UserInfo
 }
 
-func (svc *UserService) Info(ctx context.Context) (*InfoResponse, error) {
-	userId := ctx.Value(global.UserId).(int64)
+func (svc *UserService) Info(ctx context.Context, userId int64) (*InfoResponse, error) {
 	options := make([]store.Option, 0, 1)
 	options = append(options, svc.option.WithId(userId))
 	user, err := svc.store.Users().Get(ctx, options...)

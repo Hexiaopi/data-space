@@ -7,6 +7,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"gorm.io/plugin/opentelemetry/tracing"
 )
 
 type Config struct {
@@ -40,6 +41,8 @@ func New(conf *Config) (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	db.Use(tracing.NewPlugin())
 
 	sqlDB, err := db.DB()
 	if err != nil {

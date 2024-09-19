@@ -1,6 +1,7 @@
 package config
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -12,6 +13,7 @@ type config struct {
 	MySQL MySQLConfig `yaml:"mysql"`
 	Log   LogConfig   `yaml:"log"`
 	JWT   JWTConfig   `yaml:"jwt"`
+	Trace TraceConfig `yaml:"trace"`
 }
 
 func Init(path string) error {
@@ -31,10 +33,14 @@ func Init(path string) error {
 	Logger = conf.Log.NewLog()
 	HTTP = conf.HTTP
 	conf.JWT.Init()
+	conf.Trace.NewShutdown()
 	return nil
 }
 
 func Close() {
 	db, _ := DBEngine.DB()
 	db.Close()
+	if shutdown != nil {
+		shutdown(context.Background())
+	}
 }

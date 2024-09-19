@@ -8,6 +8,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 
 	"github.com/hexiaopi/data-space/internal/config"
 	"github.com/hexiaopi/data-space/internal/middleware"
@@ -70,6 +71,7 @@ func InitRouter() *gin.Engine {
 	apiRouter.Use(middleware.Cors())
 	apiRouter.Use(middleware.Logger(config.Logger))
 	apiRouter.Use(middleware.JWT(config.JWT, middleware.PathContainSkipper("login")))
+	apiRouter.Use(otelgin.Middleware("data-space"))
 
 	v1Router := apiRouter.Group("/v1")
 

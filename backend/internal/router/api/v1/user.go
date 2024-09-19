@@ -20,7 +20,8 @@ func NewUserController(srv service.Service) *UserController {
 }
 
 func (c *UserController) Info(ctx *gin.Context) (interface{}, error) {
-	res, err := c.srv.Users().Info(ctx)
+	userId := ctx.Value(global.UserId).(int64)
+	res, err := c.srv.Users().Info(ctx.Request.Context(), userId)
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +33,7 @@ func (c *UserController) Create(ctx *gin.Context) (interface{}, error) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		return nil, global.RequestUnMarshalError
 	}
-	err := c.srv.Users().Create(ctx, &req)
+	err := c.srv.Users().Create(ctx.Request.Context(), &req)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +50,7 @@ func (c *UserController) Update(ctx *gin.Context) (interface{}, error) {
 		return nil, global.RequestIllegal
 	}
 	req.Id = id
-	err = c.srv.Users().Update(ctx, &req)
+	err = c.srv.Users().Update(ctx.Request.Context(), &req)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +64,7 @@ func (c *UserController) Delete(ctx *gin.Context) (interface{}, error) {
 		return nil, global.RequestIllegal
 	}
 	req.Id = id
-	err = c.srv.Users().Delete(ctx, &req)
+	err = c.srv.Users().Delete(ctx.Request.Context(), &req)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +89,7 @@ func (c *UserController) List(ctx *gin.Context) (interface{}, error) {
 	pageSize := ctx.Query("page_size")
 	req.PageSize, _ = strconv.Atoi(pageSize)
 
-	res, err := c.srv.Users().List(ctx, &req)
+	res, err := c.srv.Users().List(ctx.Request.Context(), &req)
 	if err != nil {
 		return nil, err
 	}

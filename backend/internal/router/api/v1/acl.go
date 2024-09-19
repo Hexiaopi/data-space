@@ -22,7 +22,7 @@ func (c *AclController) Login(ctx *gin.Context) (interface{}, error) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		return nil, global.RequestUnMarshalError
 	}
-	res, err := c.srv.Users().Login(ctx, &req)
+	res, err := c.srv.Users().Login(ctx.Request.Context(), &req)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,8 @@ func (c *AclController) Logout(ctx *gin.Context) (interface{}, error) {
 }
 
 func (c *AclController) Info(ctx *gin.Context) (interface{}, error) {
-	res, err := c.srv.Users().Info(ctx)
+	userId := ctx.Value(global.UserId).(int64)
+	res, err := c.srv.Users().Info(ctx.Request.Context(), userId)
 	if err != nil {
 		return nil, err
 	}
@@ -44,5 +45,5 @@ func (c *AclController) Info(ctx *gin.Context) (interface{}, error) {
 func (c *AclController) Tree(ctx *gin.Context) (interface{}, error) {
 	userId := ctx.Value(global.UserId).(int64)
 	var req = service.AclMenuTreeRequest{UserId: userId}
-	return c.srv.Menus().AclTree(ctx, &req)
+	return c.srv.Menus().AclTree(ctx.Request.Context(), &req)
 }

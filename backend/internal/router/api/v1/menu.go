@@ -25,7 +25,7 @@ func (c *MenuController) Tree(ctx *gin.Context) (interface{}, error) {
 	if name != "" {
 		req.Name = name
 	}
-	return c.srv.Menus().Tree(ctx, &req)
+	return c.srv.Menus().Tree(ctx.Request.Context(), &req)
 }
 
 func (c *MenuController) List(ctx *gin.Context) (interface{}, error) {
@@ -41,7 +41,7 @@ func (c *MenuController) List(ctx *gin.Context) (interface{}, error) {
 	if req.PageSize <= 0 {
 		req.PageSize = 10
 	}
-	res, err := c.srv.Menus().List(ctx, &req)
+	res, err := c.srv.Menus().List(ctx.Request.Context(), &req)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (c *MenuController) Create(ctx *gin.Context) (interface{}, error) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		return nil, global.RequestUnMarshalError
 	}
-	err := c.srv.Menus().Create(ctx, &req)
+	err := c.srv.Menus().Create(ctx.Request.Context(), &req)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (c *MenuController) Update(ctx *gin.Context) (interface{}, error) {
 		return nil, global.RequestUnMarshalError
 	}
 	id, _ := strconv.ParseInt(ctx.Param("id"), 10, 64)
-	err := c.srv.Menus().Update(ctx, id, &req)
+	err := c.srv.Menus().Update(ctx.Request.Context(), id, &req)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (c *MenuController) Update(ctx *gin.Context) (interface{}, error) {
 
 func (c *MenuController) Delete(ctx *gin.Context) (interface{}, error) {
 	id, _ := strconv.ParseInt(ctx.Param("id"), 10, 64)
-	err := c.srv.Menus().Delete(ctx, id)
+	err := c.srv.Menus().Delete(ctx.Request.Context(), id)
 	if err != nil {
 		return nil, err
 	}

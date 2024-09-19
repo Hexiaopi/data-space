@@ -32,7 +32,7 @@ func (c *DepartmentController) List(ctx *gin.Context) (interface{}, error) {
 	if req.PageSize <= 0 {
 		req.PageSize = 10
 	}
-	res, err := c.srv.Departments().List(ctx, &req)
+	res, err := c.srv.Departments().List(ctx.Request.Context(), &req)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (c *DepartmentController) Create(ctx *gin.Context) (interface{}, error) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		return nil, global.RequestUnMarshalError
 	}
-	err := c.srv.Departments().Create(ctx, &req)
+	err := c.srv.Departments().Create(ctx.Request.Context(), &req)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (c *DepartmentController) Update(ctx *gin.Context) (interface{}, error) {
 		return nil, global.RequestUnMarshalError
 	}
 	id, _ := strconv.ParseInt(ctx.Param("id"), 10, 64)
-	err := c.srv.Departments().Update(ctx, id, &req)
+	err := c.srv.Departments().Update(ctx.Request.Context(), id, &req)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (c *DepartmentController) Update(ctx *gin.Context) (interface{}, error) {
 
 func (c *DepartmentController) Delete(ctx *gin.Context) (interface{}, error) {
 	id, _ := strconv.ParseInt(ctx.Param("id"), 10, 64)
-	err := c.srv.Departments().Delete(ctx, id)
+	err := c.srv.Departments().Delete(ctx.Request.Context(), id)
 	if err != nil {
 		return nil, err
 	}
