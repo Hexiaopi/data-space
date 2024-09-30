@@ -50,3 +50,7 @@ func (ds *datastore) Menus() store.MenuStore {
 func (ds *datastore) Departments() store.DepartmentStore {
 	return NewDepartmentDao(ds.db)
 }
+
+func (ds *datastore) LoginLogs() store.LoginLogStore {
+	return NewLoginLogDao(ds.db)
+}

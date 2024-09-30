@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"context"
+
 	"github.com/gin-gonic/gin"
 
 	"github.com/hexiaopi/data-space/internal/global"
@@ -22,7 +24,9 @@ func (c *AclController) Login(ctx *gin.Context) (interface{}, error) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		return nil, global.RequestUnMarshalError
 	}
-	res, err := c.srv.Users().Login(ctx.Request.Context(), &req)
+	reqCtx := context.WithValue(ctx.Request.Context(), "remote-ip", ctx.ClientIP())
+	reqCtx = context.WithValue(reqCtx, "user-agent", ctx.Request.UserAgent())
+	res, err := c.srv.Users().Login(reqCtx, &req)
 	if err != nil {
 		return nil, err
 	}

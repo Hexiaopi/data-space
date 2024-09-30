@@ -64,6 +64,12 @@ func (svc *UserService) Login(ctx context.Context, param *LoginRequest) (*LoginR
 		svc.log.Errorf("jwt generate token err: %v", err)
 		return nil, global.JWTGenerateTokenFail
 	}
+
+	remoteIp := ctx.Value("remote-ip")
+	userAgent := ctx.Value("user-agent")
+	if err := svc.store.LoginLogs().Create(ctx, &model.LoginLog{UserId: user.ID, RemoteIP: remoteIp.(string), UserAgent: userAgent.(string)}); err != nil {
+		svc.log.Errorf("store login log create err: %v", err)
+	}
 	return &LoginResponse{AccessToken: token}, nil
 }
 
