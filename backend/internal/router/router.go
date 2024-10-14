@@ -125,5 +125,11 @@ func InitRouter() *gin.Engine {
 		departmentRouter.PUT("/:id", Wrap(departmentController.Update))
 		departmentRouter.DELETE("/:id", Wrap(departmentController.Delete))
 	}
+
+	{
+		loginLogController := v1.NewLoginLogController(srv)
+		loginLogRouter := v1Router.Group("/log/logins")
+		loginLogRouter.GET("", Wrap(loginLogController.List))
+	}
 	return router
 }

@@ -1,11 +1,10 @@
 package v1
 
 import (
-	"context"
-
 	"github.com/gin-gonic/gin"
 
 	"github.com/hexiaopi/data-space/internal/global"
+	"github.com/hexiaopi/data-space/internal/model"
 	"github.com/hexiaopi/data-space/internal/service"
 )
 
@@ -24,12 +23,17 @@ func (c *AclController) Login(ctx *gin.Context) (interface{}, error) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		return nil, global.RequestUnMarshalError
 	}
-	reqCtx := context.WithValue(ctx.Request.Context(), "remote-ip", ctx.ClientIP())
-	reqCtx = context.WithValue(reqCtx, "user-agent", ctx.Request.UserAgent())
-	res, err := c.srv.Users().Login(reqCtx, &req)
+	remoteIp := ctx.ClientIP()
+	userAgent := ctx.Request.UserAgent()
+	loginLog := model.LoginLog{UserName: req.UserName, RemoteIP: remoteIp, UserAgent: userAgent, LoginResult: 1}
+	res, err := c.srv.Users().Login(ctx.Request.Context(), &req)
 	if err != nil {
+		loginLog.LoginResult = 2
+		loginLog.ResultDetail = err.Error()
+		_ = c.srv.LoginLogs().Create(ctx.Request.Context(), &loginLog)
 		return nil, err
 	}
+	_ = c.srv.LoginLogs().Create(ctx.Request.Context(), &loginLog)
 	return res, nil
 }
 

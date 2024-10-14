@@ -11,6 +11,7 @@ type Service interface {
 	Roles() RoleSrv
 	Menus() MenuSrv
 	Departments() DepartmentSrv
+	LoginLogs() LoginLogSrv
 }
 
 type service struct {
@@ -43,4 +44,8 @@ func (s *service) Menus() MenuSrv {
 
 func (s *service) Departments() DepartmentSrv {
 	return NewDepartmentService(s.store, s.option, s.log)
+}
+
+func (s *service) LoginLogs() LoginLogSrv {
+	return NewLoginLogService(s.store, s.option, s.log)
 }

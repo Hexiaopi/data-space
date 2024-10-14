@@ -88,7 +88,9 @@ func (c *UserController) List(ctx *gin.Context) (interface{}, error) {
 	}
 	pageSize := ctx.Query("page_size")
 	req.PageSize, _ = strconv.Atoi(pageSize)
-
+	if req.PageSize <= 0 {
+		req.PageSize = 10
+	}
 	res, err := c.srv.Users().List(ctx.Request.Context(), &req)
 	if err != nil {
 		return nil, err

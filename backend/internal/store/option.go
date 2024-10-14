@@ -6,5 +6,6 @@ type Option interface {
 	WithState(state uint8) Option
 	WithPage(pageNum, pageSize int) Option
 	WithField(field string, value interface{}) Option
+	WithLikeField(field string, value string) Option
 	WithDepartmentId(departmentId int64) Option
 }

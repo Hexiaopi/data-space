@@ -65,6 +65,16 @@ func (o Option) WithField(field string, value interface{}) store.Option {
 	return WithField(field, value)
 }
 
+func WithLikeField(field string, value string) Option {
+	return func(db *gorm.DB) {
+		db.Where(fmt.Sprintf("%s LIKE ?", field), "%"+value+"%")
+	}
+}
+
+func (o Option) WithLikeField(field string, value string) store.Option {
+	return WithLikeField(field, value)
+}
+
 func WithDepartmentId(departmentId int64) Option {
 	return func(db *gorm.DB) {
 		db.Where("department_id = ?", departmentId)
