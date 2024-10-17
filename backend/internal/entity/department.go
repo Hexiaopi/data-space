@@ -6,12 +6,12 @@ import (
 )
 
 type Department struct {
-	ID         int64  `json:"id"`
-	Name       string `json:"name"`
-	Desc       string `json:"desc"`
-	State      uint8  `json:"state"`
-	CreateTime string `json:"create_time"`
-	UpdateTime string `json:"update_time"`
+	ID         int64  `json:"id"`          //id
+	Name       string `json:"name"`        //名称
+	Desc       string `json:"desc"`        //描述
+	State      uint8  `json:"state"`       //状态
+	CreateTime string `json:"create_time"` //创建时间
+	UpdateTime string `json:"update_time"` //更新时间
 }
 
 func ToDepartment(department model.Department) Department {

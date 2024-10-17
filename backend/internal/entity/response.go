@@ -10,7 +10,7 @@ import (
 
 type Response struct {
 	*retcode.RetCode
-	Data interface{} `json:"data,omitempty"`
+	Data interface{} `json:"data,omitempty"` //数据
 }
 
 func ToResponseCode(writer http.ResponseWriter, err error) {

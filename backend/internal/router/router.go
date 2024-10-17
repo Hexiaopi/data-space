@@ -14,6 +14,7 @@ import (
 	"github.com/hexiaopi/data-space/internal/middleware"
 	"github.com/hexiaopi/data-space/internal/router/api"
 	v1 "github.com/hexiaopi/data-space/internal/router/api/v1"
+	_ "github.com/hexiaopi/data-space/internal/router/doc"
 	"github.com/hexiaopi/data-space/internal/service"
 	dao "github.com/hexiaopi/data-space/internal/store/mysql"
 
@@ -50,6 +51,16 @@ func Wrap(handler HandlerFunc) func(c *gin.Context) {
 	}
 }
 
+// @title Data Space API
+// @version 1.0
+// @description This is data space restful api docs.
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+// @host      localhost:8080
+// @BasePath  /
+// @securityDefinitions.apikey JWT
+// @in header
+// @name Authorization
 func InitRouter() *gin.Engine {
 	storeIns := dao.NewDao(config.DBEngine)
 	optionIns := dao.NewOption()
@@ -83,7 +94,7 @@ func InitRouter() *gin.Engine {
 		aclRouter.POST("/login", Wrap(aclController.Login))
 		aclRouter.POST("/logout", Wrap(aclController.Logout))
 		aclRouter.GET("/tree", Wrap(aclController.Tree))
-		aclRouter.GET("/user", Wrap(aclController.Info))
+		aclRouter.GET("/user", Wrap(aclController.User))
 	}
 
 	{

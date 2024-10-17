@@ -12,8 +12,8 @@ var (
 )
 
 type RetCode struct {
-	Code string `json:"code"`
-	Desc string `json:"desc"`
+	Code string `json:"code"` //错误码
+	Desc string `json:"desc"` //错误码描述
 }
 
 var codes = map[string]string{}

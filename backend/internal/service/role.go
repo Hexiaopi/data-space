@@ -15,7 +15,7 @@ type RoleSrv interface {
 	Update(ctx context.Context, id int64, req *RoleUpdateRequest) error
 	Delete(ctx context.Context, id int64) error
 	List(ctx context.Context, req *RoleListRequest) (*RoleListResponse, error)
-	Get(ctx context.Context, id int64) (*RoleGetResponse, error)
+	Get(ctx context.Context, id int64) (*RoleInfoResponse, error)
 	GetMenu(ctx context.Context, id int64) (*entity.MenuTree, error)
 	UpdateMenu(ctx context.Context, id int64, param *UpdateMenuRequest) error
 }
@@ -83,10 +83,10 @@ func (svc *RoleService) Delete(ctx context.Context, id int64) error {
 }
 
 type RoleListRequest struct {
-	Name     string `json:"name"`
-	State    uint8  `json:"state"`
-	PageNum  int    `json:"page_num"`
-	PageSize int    `json:"page_size"`
+	Name     string `json:"name"`      //名称
+	State    uint8  `json:"state"`     //状态
+	PageNum  int    `json:"page_num"`  //页码
+	PageSize int    `json:"page_size"` //页大小
 }
 
 type RoleListResponse struct {
@@ -122,13 +122,13 @@ func (svc *RoleService) List(ctx context.Context, req *RoleListRequest) (*RoleLi
 	return &res, nil
 }
 
-type RoleGetResponse struct {
+type RoleInfoResponse struct {
 	Role  entity.Role     `json:"role"`
 	Menus entity.MenuTree `json:"menus"`
 }
 
-func (svc *RoleService) Get(ctx context.Context, id int64) (*RoleGetResponse, error) {
-	var res RoleGetResponse
+func (svc *RoleService) Get(ctx context.Context, id int64) (*RoleInfoResponse, error) {
+	var res RoleInfoResponse
 	options := make([]store.Option, 0)
 	options = append(options, svc.option.WithId(id))
 	role, err := svc.store.Roles().Get(ctx, options...)

@@ -19,6 +19,16 @@ func NewUserController(srv service.Service) *UserController {
 	}
 }
 
+// @Summary 用户详情接口
+// @Description 根据用户id查询用户信息
+// @Tags user
+// @Produce json
+// @Accept json
+// @Security JWT
+// @param id path int true "用户id"
+// @Success 200 {object} router.Response{data=entity.UserInfo} "成功"
+// @Failure 200 {object} router.Response{} "失败"
+// @Router /api/v1/users/{id} [get]
 func (c *UserController) Info(ctx *gin.Context) (interface{}, error) {
 	userId := ctx.Value(global.UserId).(int64)
 	res, err := c.srv.Users().Info(ctx.Request.Context(), userId)
@@ -28,6 +38,16 @@ func (c *UserController) Info(ctx *gin.Context) (interface{}, error) {
 	return res, nil
 }
 
+// @Summary 创建用户接口
+// @Description 创建用户信息
+// @Tags user
+// @Produce json
+// @Accept json
+// @Security JWT
+// @param CreateUserRequest body service.CreateUserRequest false "请求参数"
+// @Success 200 {object} router.Response{} "成功"
+// @Failure 200 {object} router.Response{} "失败"
+// @Router /api/v1/users [post]
 func (c *UserController) Create(ctx *gin.Context) (interface{}, error) {
 	var req service.CreateUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -40,6 +60,17 @@ func (c *UserController) Create(ctx *gin.Context) (interface{}, error) {
 	return nil, nil
 }
 
+// @Summary 修改用户接口
+// @Description 修改用户信息
+// @Tags user
+// @Produce json
+// @Accept json
+// @Security JWT
+// @param id path int true "用户id"
+// @param UpdateUserRequest body service.UpdateUserRequest false "请求参数"
+// @Success 200 {object} router.Response{} "成功"
+// @Failure 200 {object} router.Response{} "失败"
+// @Router /api/v1/users/{id} [put]
 func (c *UserController) Update(ctx *gin.Context) (interface{}, error) {
 	var req service.UpdateUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -57,6 +88,16 @@ func (c *UserController) Update(ctx *gin.Context) (interface{}, error) {
 	return nil, nil
 }
 
+// @Summary 删除用户接口
+// @Description 删除用户信息
+// @Tags user
+// @Produce json
+// @Accept json
+// @Security JWT
+// @param id path int true "用户id"
+// @Success 200 {object} router.Response{} "成功"
+// @Failure 200 {object} router.Response{} "失败"
+// @Router /api/v1/users/{id} [delete]
 func (c *UserController) Delete(ctx *gin.Context) (interface{}, error) {
 	var req service.DeleteUserRequest
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
@@ -71,6 +112,16 @@ func (c *UserController) Delete(ctx *gin.Context) (interface{}, error) {
 	return nil, nil
 }
 
+// @Summary 用户列表接口
+// @Description 查询用户列表信息
+// @Tags user
+// @Produce json
+// @Accept json
+// @Security JWT
+// @param request query service.ListUserRequest true "请求参数"
+// @Success 200 {object} router.Response{data=service.ListUserResponse} "成功"
+// @Failure 200 {object} router.Response{} "失败"
+// @Router /api/v1/users [get]
 func (c *UserController) List(ctx *gin.Context) (interface{}, error) {
 	var req service.ListUserRequest
 	departmentId, err := strconv.ParseInt(ctx.Query("department_id"), 10, 64)

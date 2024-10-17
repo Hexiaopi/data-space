@@ -18,18 +18,18 @@ func (a MenuTree) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a MenuTree) Less(i, j int) bool { return a[i].Order < a[j].Order }
 
 type Menu struct {
-	ID         int64    `json:"id"`
-	Name       string   `json:"name"`
-	Desc       string   `json:"desc"`
-	Path       string   `json:"path"`
-	Icon       string   `json:"icon"`
-	Component  string   `json:"component"`
-	Type       string   `json:"type"`
-	Order      int64    `json:"order"`
-	ParentId   int64    `json:"parent_id"`
-	CreateTime string   `json:"create_time"`
-	UpdateTime string   `json:"update_time"`
-	Children   MenuTree `json:"children"`
+	ID         int64    `json:"id"`          //id
+	Name       string   `json:"name"`        //名称
+	Desc       string   `json:"desc"`        //描述
+	Path       string   `json:"path"`        //路径
+	Icon       string   `json:"icon"`        //图标
+	Component  string   `json:"component"`   //组件
+	Type       string   `json:"type"`        //类型
+	Order      int64    `json:"order"`       //排序
+	ParentId   int64    `json:"parent_id"`   //父级id
+	CreateTime string   `json:"create_time"` //创建时间
+	UpdateTime string   `json:"update_time"` //修改时间
+	Children   MenuTree `json:"children"`    //子级菜单
 }
 
 func (m Menu) Print(i int) {

@@ -11,8 +11,8 @@ import (
 )
 
 type MenuSrv interface {
-	AclTree(ctx context.Context, param *AclMenuTreeRequest) (*MenuTreeResponse, error)
-	Tree(ctx context.Context, param *MenuTreeRequest) (*MenuTreeResponse, error)
+	AclTree(ctx context.Context, param *AclMenuTreeRequest) (*entity.MenuTree, error)
+	Tree(ctx context.Context, param *MenuTreeRequest) (*entity.MenuTree, error)
 	List(ctx context.Context, param *MenuListRequest) (*MenuListResponse, error)
 	Delete(ctx context.Context, id int64) error
 	Create(ctx context.Context, param *MenuCreateRequest) error
@@ -37,9 +37,7 @@ type AclMenuTreeRequest struct {
 	UserId int64
 }
 
-type MenuTreeResponse []*entity.Menu
-
-func (svc *MenuService) AclTree(ctx context.Context, param *AclMenuTreeRequest) (*MenuTreeResponse, error) {
+func (svc *MenuService) AclTree(ctx context.Context, param *AclMenuTreeRequest) (*entity.MenuTree, error) {
 	options := make([]store.Option, 0)
 	options = append(options, svc.option.WithId(param.UserId))
 	user, err := svc.store.Users().Get(ctx, options...)
@@ -61,15 +59,14 @@ func (svc *MenuService) AclTree(ctx context.Context, param *AclMenuTreeRequest) 
 		return nil, global.MenuTreeFail
 	}
 	tree := entity.GenerateMenuTree(menus)
-	res := MenuTreeResponse(tree)
-	return &res, nil
+	return &tree, nil
 }
 
 type MenuTreeRequest struct {
 	Name string `json:"name"`
 }
 
-func (svc *MenuService) Tree(ctx context.Context, param *MenuTreeRequest) (*MenuTreeResponse, error) {
+func (svc *MenuService) Tree(ctx context.Context, param *MenuTreeRequest) (*entity.MenuTree, error) {
 	options := make([]store.Option, 0)
 	if param.Name != "" {
 		options = append(options, svc.option.WithName(param.Name))
@@ -81,8 +78,7 @@ func (svc *MenuService) Tree(ctx context.Context, param *MenuTreeRequest) (*Menu
 		return nil, global.MenuTreeFail
 	}
 	tree := entity.GenerateMenuTree(menus)
-	res := MenuTreeResponse(tree)
-	return &res, nil
+	return &tree, nil
 }
 
 type MenuListRequest struct {

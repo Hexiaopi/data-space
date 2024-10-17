@@ -19,6 +19,16 @@ func NewMenuController(srv service.Service) *MenuController {
 	}
 }
 
+// @Summary 菜单树接口
+// @Description 查询菜单树
+// @Tags menu
+// @Produce json
+// @Accept json
+// @Security JWT
+// @param name query string false "名称"
+// @Success 200 {object} router.Response{data=entity.MenuTree} "成功"
+// @Failure 200 {object} router.Response{} "失败"
+// @Router /api/v1/menus/tree [get]
 func (c *MenuController) Tree(ctx *gin.Context) (interface{}, error) {
 	var req = service.MenuTreeRequest{}
 	name := ctx.Query("name")
@@ -48,6 +58,16 @@ func (c *MenuController) List(ctx *gin.Context) (interface{}, error) {
 	return res, nil
 }
 
+// @Summary 创建菜单接口
+// @Description 创建菜单信息
+// @Tags menu
+// @Produce json
+// @Accept json
+// @Security JWT
+// @param MenuCreateRequest body service.MenuCreateRequest true "请求参数"
+// @Success 200 {object} router.Response{} "成功"
+// @Failure 200 {object} router.Response{} "失败"
+// @Router /api/v1/menus [post]
 func (c *MenuController) Create(ctx *gin.Context) (interface{}, error) {
 	var req service.MenuCreateRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -60,6 +80,17 @@ func (c *MenuController) Create(ctx *gin.Context) (interface{}, error) {
 	return nil, nil
 }
 
+// @Summary 修改菜单接口
+// @Description 修改菜单信息
+// @Tags menu
+// @Produce json
+// @Accept json
+// @Security JWT
+// @param id path int true "菜单id"
+// @param MenuUpdateRequest body service.MenuUpdateRequest true "请求参数"
+// @Success 200 {object} router.Response{} "成功"
+// @Failure 200 {object} router.Response{} "失败"
+// @Router /api/v1/menus/{id} [put]
 func (c *MenuController) Update(ctx *gin.Context) (interface{}, error) {
 	var req service.MenuUpdateRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -73,6 +104,16 @@ func (c *MenuController) Update(ctx *gin.Context) (interface{}, error) {
 	return nil, nil
 }
 
+// @Summary 删除菜单接口
+// @Description 根据id删除菜单
+// @Tags menu
+// @Produce json
+// @Accept json
+// @Security JWT
+// @param id path int true "菜单id"
+// @Success 200 {object} router.Response{} "成功"
+// @Failure 200 {object} router.Response{} "失败"
+// @Router /api/v1/menus/{id} [delete]
 func (c *MenuController) Delete(ctx *gin.Context) (interface{}, error) {
 	id, _ := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	err := c.srv.Menus().Delete(ctx.Request.Context(), id)

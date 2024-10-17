@@ -37,10 +37,10 @@ func (srv *LoginLogService) Create(ctx context.Context, loginLog *model.LoginLog
 }
 
 type LoginLogListRequest struct {
-	UserName    string `json:"user_name"`
-	LoginResult int    `json:"login_result"`
-	PageNum     int    `json:"page_num"`
-	PageSize    int    `json:"page_size"`
+	UserName    string `json:"user_name"`    //用户名称
+	LoginResult int    `json:"login_result"` //登录结果
+	PageNum     int    `json:"page_num"`     //页码
+	PageSize    int    `json:"page_size"`    //页大小
 }
 
 type LoginLogListResponse struct {

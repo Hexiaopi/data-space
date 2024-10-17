@@ -32,15 +32,15 @@ func NewDepartmentService(store store.Factory, option store.Option, log logger.L
 }
 
 type DepartmentListRequest struct {
-	Name     string `json:"name"`
-	State    uint8  `json:"state"`
-	PageNum  int    `json:"page_num"`
-	PageSize int    `json:"page_size"`
+	Name     string `json:"name"`      //名称
+	State    uint8  `json:"state"`     //状态
+	PageNum  int    `json:"page_num"`  //页码
+	PageSize int    `json:"page_size"` //页大小
 }
 
 type DepartmentListResponse struct {
-	List  []entity.Department `json:"list"`
-	Total int64               `json:"total"`
+	List  []entity.Department `json:"list"`  //列表
+	Total int64               `json:"total"` //总数
 }
 
 func (svc *DepartmentService) List(ctx context.Context, req *DepartmentListRequest) (*DepartmentListResponse, error) {

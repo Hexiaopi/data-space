@@ -17,6 +17,16 @@ func NewLoginLogController(srv service.Service) *LoginLogController {
 	}
 }
 
+// @Summary 登录日志查询接口
+// @Description 查询登录日志信息
+// @Tags log
+// @Produce json
+// @Accept json
+// @Security JWT
+// @param LoginLogListRequest query service.LoginLogListRequest true "请求参数"
+// @Success 200 {object} router.Response{data=service.LoginLogListResponse} "成功"
+// @Failure 200 {object} router.Response{} "失败"
+// @Router /api/v1/log/logins [get]
 func (c *LoginLogController) List(ctx *gin.Context) (interface{}, error) {
 	var req service.LoginLogListRequest
 	req.UserName = ctx.Query("user_name")

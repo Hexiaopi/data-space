@@ -13,7 +13,7 @@ import (
 
 type UserSrv interface {
 	Login(ctx context.Context, param *LoginRequest) (*LoginResponse, error)
-	Info(ctx context.Context, id int64) (*InfoResponse, error)
+	Info(ctx context.Context, id int64) (*entity.UserInfo, error)
 	Create(ctx context.Context, param *CreateUserRequest) error
 	Update(ctx context.Context, param *UpdateUserRequest) error
 	Delete(ctx context.Context, param *DeleteUserRequest) error
@@ -37,12 +37,12 @@ func NewUserService(store store.Factory, option store.Option, jwt jwt.JWT, log l
 }
 
 type LoginRequest struct {
-	UserName string `json:"username"`
-	PassWord string `json:"password"`
+	UserName string `json:"username"` //用户名
+	PassWord string `json:"password"` //密码
 }
 
 type LoginResponse struct {
-	AccessToken string `json:"access_token"`
+	AccessToken string `json:"access_token"` //访问token
 }
 
 func (svc *UserService) Login(ctx context.Context, param *LoginRequest) (*LoginResponse, error) {
@@ -67,11 +67,11 @@ func (svc *UserService) Login(ctx context.Context, param *LoginRequest) (*LoginR
 	return &LoginResponse{AccessToken: token}, nil
 }
 
-type InfoResponse struct {
+type UserInfoResponse struct {
 	entity.UserInfo
 }
 
-func (svc *UserService) Info(ctx context.Context, userId int64) (*InfoResponse, error) {
+func (svc *UserService) Info(ctx context.Context, userId int64) (*entity.UserInfo, error) {
 	options := make([]store.Option, 0, 1)
 	options = append(options, svc.option.WithId(userId))
 	user, err := svc.store.Users().Get(ctx, options...)
@@ -82,7 +82,7 @@ func (svc *UserService) Info(ctx context.Context, userId int64) (*InfoResponse, 
 	if user == nil {
 		return nil, global.UserNotExist
 	}
-	res := InfoResponse{UserInfo: entity.UserInfo{
+	res := entity.UserInfo{
 		User: entity.User{
 			ID:         user.ID,
 			Name:       user.Name,
@@ -90,7 +90,7 @@ func (svc *UserService) Info(ctx context.Context, userId int64) (*InfoResponse, 
 			CreateTime: user.CreateTime.Format(global.DateTimeFormat),
 			UpdateTime: user.UpdateTime.Format(global.DateTimeFormat),
 		},
-	}}
+	}
 	roles, err := svc.store.Roles().ListUserRoles(ctx, userId)
 	if err != nil {
 		svc.log.Errorf("store list user roles err: %v", err)
@@ -113,12 +113,12 @@ func (svc *UserService) Info(ctx context.Context, userId int64) (*InfoResponse, 
 }
 
 type CreateUserRequest struct {
-	Name         string `json:"name"`
-	Desc         string `json:"desc"`
-	Avatar       string `json:"avatar"`
-	Password     string `json:"password"`
-	State        uint8  `json:"state"`
-	DepartmentId int64  `json:"department_id"`
+	Name         string `json:"name"`          //名称
+	Desc         string `json:"desc"`          //描述
+	Avatar       string `json:"avatar"`        //头像
+	Password     string `json:"password"`      //密码
+	State        uint8  `json:"state"`         //状态
+	DepartmentId int64  `json:"department_id"` //部门id
 }
 
 func (svc *UserService) Create(ctx context.Context, req *CreateUserRequest) error {
@@ -153,12 +153,12 @@ func (svc *UserService) Create(ctx context.Context, req *CreateUserRequest) erro
 }
 
 type UpdateUserRequest struct {
-	Id       int64  `json:"id"`
-	Name     string `json:"name"`
-	Desc     string `json:"desc"`
-	Avatar   string `json:"avatar"`
-	Password string `json:"password"`
-	State    uint8  `json:"state"`
+	Id       int64  `json:"id"`       //id
+	Name     string `json:"name"`     //名称
+	Desc     string `json:"desc"`     //描述
+	Avatar   string `json:"avatar"`   //头像
+	Password string `json:"password"` //密码
+	State    uint8  `json:"state"`    //状态
 }
 
 func (svc *UserService) Update(ctx context.Context, req *UpdateUserRequest) error {
@@ -193,16 +193,17 @@ func (svc *UserService) Delete(ctx context.Context, req *DeleteUserRequest) erro
 }
 
 type ListUserRequest struct {
-	Name         string `json:"name"`
-	State        uint8  `json:"state"`
-	DepartmentId int64  `json:"department_id"`
-	PageNum      int    `json:"page_num"`
-	PageSize     int    `json:"page_size"`
+	Name         string `json:"name"`          //名称
+	State        uint8  `json:"state"`         //状态
+	DepartmentId int64  `json:"department_id"` //部门id
+	PageNum      int    `json:"page_num"`      //页码
+	PageSize     int    `json:"page_size"`     //页大小
 }
 
 type ListUserResponse struct {
-	List  []entity.User `json:"list"`
-	Total int64         `json:"total"`
+	List  []entity.User `json:"list"`  //列表
+	Total int64         `json:"total"` //总数
+
 }
 
 func (svc *UserService) List(ctx context.Context, req *ListUserRequest) (*ListUserResponse, error) {

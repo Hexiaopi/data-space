@@ -6,14 +6,14 @@ import (
 )
 
 type LoginLog struct {
-	Id           int64  `json:"id"`
-	UserName     string `json:"user_name"`
-	RemoteIp     string `json:"remote_ip"`
-	UserAgent    string `json:"user_agent"`
-	LoginResult  uint8  `json:"login_result"`
-	ResultDetail string `json:"result_detail"`
-	CreateTime   string `json:"create_time"`
-	UpdateTime   string `json:"update_time"`
+	Id           int64  `json:"id"`            //id
+	UserName     string `json:"user_name"`     //用户名
+	RemoteIp     string `json:"remote_ip"`     //访问ip
+	UserAgent    string `json:"user_agent"`    //用户代理
+	LoginResult  uint8  `json:"login_result"`  //登录结果
+	ResultDetail string `json:"result_detail"` //结果详情
+	CreateTime   string `json:"create_time"`   //创建时间
+	UpdateTime   string `json:"update_time"`   //更新时间
 }
 
 func ToLoginLog(loginLog model.LoginLog) LoginLog {

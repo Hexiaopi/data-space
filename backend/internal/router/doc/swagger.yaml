@@ -1,0 +1,1049 @@
+basePath: /
+definitions:
+  entity.Department:
+    properties:
+      create_time:
+        description: 创建时间
+        type: string
+      desc:
+        description: 描述
+        type: string
+      id:
+        description: id
+        type: integer
+      name:
+        description: 名称
+        type: string
+      state:
+        description: 状态
+        type: integer
+      update_time:
+        description: 更新时间
+        type: string
+    type: object
+  entity.LoginLog:
+    properties:
+      create_time:
+        description: 创建时间
+        type: string
+      id:
+        description: id
+        type: integer
+      login_result:
+        description: 登录结果
+        type: integer
+      remote_ip:
+        description: 访问ip
+        type: string
+      result_detail:
+        description: 结果详情
+        type: string
+      update_time:
+        description: 更新时间
+        type: string
+      user_agent:
+        description: 用户代理
+        type: string
+      user_name:
+        description: 用户名
+        type: string
+    type: object
+  entity.Menu:
+    properties:
+      children:
+        allOf:
+        - $ref: '#/definitions/entity.MenuTree'
+        description: 子级菜单
+      component:
+        description: 组件
+        type: string
+      create_time:
+        description: 创建时间
+        type: string
+      desc:
+        description: 描述
+        type: string
+      icon:
+        description: 图标
+        type: string
+      id:
+        description: id
+        type: integer
+      name:
+        description: 名称
+        type: string
+      order:
+        description: 排序
+        type: integer
+      parent_id:
+        description: 父级id
+        type: integer
+      path:
+        description: 路径
+        type: string
+      type:
+        description: 类型
+        type: string
+      update_time:
+        description: 修改时间
+        type: string
+    type: object
+  entity.MenuTree:
+    items:
+      $ref: '#/definitions/entity.Menu'
+    type: array
+  entity.Role:
+    properties:
+      create_time:
+        description: 创建时间
+        type: string
+      desc:
+        description: 描述
+        type: string
+      id:
+        description: id
+        type: integer
+      name:
+        description: 名称
+        type: string
+      state:
+        description: 状态
+        type: integer
+      update_time:
+        description: 更新时间
+        type: string
+    type: object
+  entity.User:
+    properties:
+      avatar:
+        description: 头像
+        type: string
+      create_time:
+        description: 创建时间
+        type: string
+      desc:
+        description: 描述
+        type: string
+      id:
+        description: id
+        type: integer
+      name:
+        description: 姓名
+        type: string
+      state:
+        description: 状态
+        type: integer
+      update_time:
+        description: 更新时间
+        type: string
+    type: object
+  entity.UserInfo:
+    properties:
+      avatar:
+        description: 头像
+        type: string
+      create_time:
+        description: 创建时间
+        type: string
+      current_role:
+        allOf:
+        - $ref: '#/definitions/entity.Role'
+        description: 当前角色
+      desc:
+        description: 描述
+        type: string
+      id:
+        description: id
+        type: integer
+      name:
+        description: 姓名
+        type: string
+      roles:
+        description: 角色列表
+        items:
+          $ref: '#/definitions/entity.Role'
+        type: array
+      state:
+        description: 状态
+        type: integer
+      update_time:
+        description: 更新时间
+        type: string
+    type: object
+  router.Response:
+    properties:
+      code:
+        description: 错误码
+        type: string
+      data: {}
+      desc:
+        description: 错误码描述
+        type: string
+    type: object
+  service.CreateUserRequest:
+    properties:
+      avatar:
+        description: 头像
+        type: string
+      department_id:
+        description: 部门id
+        type: integer
+      desc:
+        description: 描述
+        type: string
+      name:
+        description: 名称
+        type: string
+      password:
+        description: 密码
+        type: string
+      state:
+        description: 状态
+        type: integer
+    type: object
+  service.DepartmentCreateRequest:
+    properties:
+      desc:
+        type: string
+      name:
+        type: string
+      state:
+        type: integer
+    type: object
+  service.DepartmentListResponse:
+    properties:
+      list:
+        description: 列表
+        items:
+          $ref: '#/definitions/entity.Department'
+        type: array
+      total:
+        description: 总数
+        type: integer
+    type: object
+  service.DepartmentUpdateRequest:
+    properties:
+      desc:
+        type: string
+      name:
+        type: string
+      state:
+        type: integer
+    type: object
+  service.ListUserResponse:
+    properties:
+      list:
+        description: 列表
+        items:
+          $ref: '#/definitions/entity.User'
+        type: array
+      total:
+        description: 总数
+        type: integer
+    type: object
+  service.LoginLogListResponse:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/entity.LoginLog'
+        type: array
+      total:
+        type: integer
+    type: object
+  service.LoginRequest:
+    properties:
+      password:
+        description: 密码
+        type: string
+      username:
+        description: 用户名
+        type: string
+    type: object
+  service.LoginResponse:
+    properties:
+      access_token:
+        description: 访问token
+        type: string
+    type: object
+  service.MenuCreateRequest:
+    properties:
+      children:
+        allOf:
+        - $ref: '#/definitions/entity.MenuTree'
+        description: 子级菜单
+      component:
+        description: 组件
+        type: string
+      create_time:
+        description: 创建时间
+        type: string
+      desc:
+        description: 描述
+        type: string
+      icon:
+        description: 图标
+        type: string
+      id:
+        description: id
+        type: integer
+      name:
+        description: 名称
+        type: string
+      order:
+        description: 排序
+        type: integer
+      parent_id:
+        description: 父级id
+        type: integer
+      path:
+        description: 路径
+        type: string
+      type:
+        description: 类型
+        type: string
+      update_time:
+        description: 修改时间
+        type: string
+    type: object
+  service.MenuUpdateRequest:
+    properties:
+      children:
+        allOf:
+        - $ref: '#/definitions/entity.MenuTree'
+        description: 子级菜单
+      component:
+        description: 组件
+        type: string
+      create_time:
+        description: 创建时间
+        type: string
+      desc:
+        description: 描述
+        type: string
+      icon:
+        description: 图标
+        type: string
+      id:
+        description: id
+        type: integer
+      name:
+        description: 名称
+        type: string
+      order:
+        description: 排序
+        type: integer
+      parent_id:
+        description: 父级id
+        type: integer
+      path:
+        description: 路径
+        type: string
+      type:
+        description: 类型
+        type: string
+      update_time:
+        description: 修改时间
+        type: string
+    type: object
+  service.RoleCreateRequest:
+    properties:
+      desc:
+        type: string
+      name:
+        type: string
+      state:
+        type: integer
+    type: object
+  service.RoleInfoResponse:
+    properties:
+      menus:
+        items:
+          $ref: '#/definitions/entity.Menu'
+        type: array
+      role:
+        $ref: '#/definitions/entity.Role'
+    type: object
+  service.RoleListResponse:
+    properties:
+      roles:
+        items:
+          $ref: '#/definitions/entity.Role'
+        type: array
+      total:
+        type: integer
+    type: object
+  service.RoleUpdateRequest:
+    properties:
+      desc:
+        type: string
+      name:
+        type: string
+      state:
+        type: integer
+    type: object
+  service.UpdateMenuRequest:
+    properties:
+      menu_ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  service.UpdateUserRequest:
+    properties:
+      avatar:
+        description: 头像
+        type: string
+      desc:
+        description: 描述
+        type: string
+      id:
+        description: id
+        type: integer
+      name:
+        description: 名称
+        type: string
+      password:
+        description: 密码
+        type: string
+      state:
+        description: 状态
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is data space restful api docs.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Data Space API
+  version: "1.0"
+paths:
+  /api/v1/acl/login:
+    post:
+      consumes:
+      - application/json
+      description: 用户登录生成Token
+      parameters:
+      - description: 用户信息
+        in: body
+        name: LoginRequest
+        required: true
+        schema:
+          $ref: '#/definitions/service.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      summary: 登录接口
+      tags:
+      - acl
+  /api/v1/acl/logout:
+    post:
+      consumes:
+      - application/json
+      description: 当前登录用户登出
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 登出接口
+      tags:
+      - acl
+  /api/v1/acl/tree:
+    get:
+      consumes:
+      - application/json
+      description: 访问当前登录用户的菜单树
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 访问菜单树
+      tags:
+      - acl
+  /api/v1/acl/user:
+    get:
+      consumes:
+      - application/json
+      description: 当前登录用户的相关信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 访问登录信息
+      tags:
+      - acl
+  /api/v1/departments:
+    get:
+      consumes:
+      - application/json
+      description: 查询部门列表
+      parameters:
+      - description: 名称
+        in: query
+        name: name
+        type: string
+      - description: 页码
+        in: query
+        name: page_num
+        type: integer
+      - description: 页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: 状态
+        in: query
+        name: state
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 部门列表接口
+      tags:
+      - department
+    post:
+      consumes:
+      - application/json
+      description: 创建新的部门
+      parameters:
+      - description: 请求参数
+        in: body
+        name: DepartmentCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/service.DepartmentCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 创建部门接口
+      tags:
+      - department
+  /api/v1/departments/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 根据部门id删除部门信息
+      parameters:
+      - description: 部门id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 删除部门接口
+      tags:
+      - department
+    put:
+      consumes:
+      - application/json
+      description: 根据部门id修改部门信息
+      parameters:
+      - description: 部门id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 请求参数
+        in: body
+        name: DepartmentUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/service.DepartmentUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 修改部门接口
+      tags:
+      - department
+  /api/v1/log/logins:
+    get:
+      consumes:
+      - application/json
+      description: 查询登录日志信息
+      parameters:
+      - description: 登录结果
+        in: query
+        name: login_result
+        type: integer
+      - description: 页码
+        in: query
+        name: page_num
+        type: integer
+      - description: 页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: 用户名称
+        in: query
+        name: user_name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 登录日志查询接口
+      tags:
+      - log
+  /api/v1/menus:
+    post:
+      consumes:
+      - application/json
+      description: 创建菜单信息
+      parameters:
+      - description: 请求参数
+        in: body
+        name: MenuCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/service.MenuCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 创建菜单接口
+      tags:
+      - menu
+  /api/v1/menus/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 根据id删除菜单
+      parameters:
+      - description: 菜单id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 删除菜单接口
+      tags:
+      - menu
+    put:
+      consumes:
+      - application/json
+      description: 修改菜单信息
+      parameters:
+      - description: 菜单id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 请求参数
+        in: body
+        name: MenuUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/service.MenuUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 修改菜单接口
+      tags:
+      - menu
+  /api/v1/menus/tree:
+    get:
+      consumes:
+      - application/json
+      description: 查询菜单树
+      parameters:
+      - description: 名称
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 菜单树接口
+      tags:
+      - menu
+  /api/v1/roles:
+    get:
+      consumes:
+      - application/json
+      description: 查询角色列表
+      parameters:
+      - description: 名称
+        in: query
+        name: name
+        type: string
+      - description: 页码
+        in: query
+        name: page_num
+        type: integer
+      - description: 页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: 状态
+        in: query
+        name: state
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 角色列表接口
+      tags:
+      - role
+    post:
+      consumes:
+      - application/json
+      description: 创建角色信息
+      parameters:
+      - description: 请求参数
+        in: body
+        name: RoleCreateRequest
+        schema:
+          $ref: '#/definitions/service.RoleCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 角色创建接口
+      tags:
+      - role
+  /api/v1/roles/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 根据角色id删除角色信息
+      parameters:
+      - description: 角色id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 角色删除接口
+      tags:
+      - role
+    get:
+      consumes:
+      - application/json
+      description: 根据角色id查询角色信息
+      parameters:
+      - description: 角色id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 角色详情接口
+      tags:
+      - role
+    put:
+      consumes:
+      - application/json
+      description: 根据角色id修改角色信息
+      parameters:
+      - description: 角色id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 请求参数
+        in: body
+        name: RoleUpdateRequest
+        schema:
+          $ref: '#/definitions/service.RoleUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 角色修改接口
+      tags:
+      - role
+  /api/v1/roles/{id}/menu:
+    get:
+      consumes:
+      - application/json
+      description: 根据角色id查询菜单信息
+      parameters:
+      - description: 角色ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 角色菜单接口
+      tags:
+      - role
+    put:
+      consumes:
+      - application/json
+      description: 修改角色对应的菜单信息
+      parameters:
+      - description: 角色ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 请求参数
+        in: body
+        name: UpdateMenuRequest
+        schema:
+          $ref: '#/definitions/service.UpdateMenuRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 修改角色菜单接口
+      tags:
+      - role
+  /api/v1/users:
+    get:
+      consumes:
+      - application/json
+      description: 查询用户列表信息
+      parameters:
+      - description: 部门id
+        in: query
+        name: department_id
+        type: integer
+      - description: 名称
+        in: query
+        name: name
+        type: string
+      - description: 页码
+        in: query
+        name: page_num
+        type: integer
+      - description: 页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: 状态
+        in: query
+        name: state
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 用户列表接口
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      description: 创建用户信息
+      parameters:
+      - description: 请求参数
+        in: body
+        name: CreateUserRequest
+        schema:
+          $ref: '#/definitions/service.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 创建用户接口
+      tags:
+      - user
+  /api/v1/users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除用户信息
+      parameters:
+      - description: 用户id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 删除用户接口
+      tags:
+      - user
+    get:
+      consumes:
+      - application/json
+      description: 根据用户id查询用户信息
+      parameters:
+      - description: 用户id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 用户详情接口
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: 修改用户信息
+      parameters:
+      - description: 用户id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 请求参数
+        in: body
+        name: UpdateUserRequest
+        schema:
+          $ref: '#/definitions/service.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 失败
+          schema:
+            $ref: '#/definitions/router.Response'
+      security:
+      - JWT: []
+      summary: 修改用户接口
+      tags:
+      - user
+securityDefinitions:
+  JWT:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -18,6 +18,15 @@ func NewAclController(srv service.Service) *AclController {
 	}
 }
 
+// @Summary 登录接口
+// @Description 用户登录生成Token
+// @Tags acl
+// @Produce json
+// @Accept json
+// @param LoginRequest body service.LoginRequest true "用户信息"
+// @Success 200 {object} router.Response{data=service.LoginResponse} "成功"
+// @Failure 200 {object} router.Response{} "失败"
+// @Router /api/v1/acl/login [post]
 func (c *AclController) Login(ctx *gin.Context) (interface{}, error) {
 	var req service.LoginRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -37,11 +46,29 @@ func (c *AclController) Login(ctx *gin.Context) (interface{}, error) {
 	return res, nil
 }
 
+// @Summary 登出接口
+// @Description 当前登录用户登出
+// @Tags acl
+// @Produce json
+// @Accept json
+// @Security JWT
+// @Success 200 {object} router.Response{} "成功"
+// @Failure 200 {object} router.Response{} "失败"
+// @Router /api/v1/acl/logout [post]
 func (c *AclController) Logout(ctx *gin.Context) (interface{}, error) {
 	return nil, nil
 }
 
-func (c *AclController) Info(ctx *gin.Context) (interface{}, error) {
+// @Summary 访问登录信息
+// @Description 当前登录用户的相关信息
+// @Tags acl
+// @Produce json
+// @Accept json
+// @Security JWT
+// @Success 200 {object} router.Response{data=entity.UserInfo} "成功"
+// @Failure 200 {object} router.Response{} "失败"
+// @Router /api/v1/acl/user [get]
+func (c *AclController) User(ctx *gin.Context) (interface{}, error) {
 	userId := ctx.Value(global.UserId).(int64)
 	res, err := c.srv.Users().Info(ctx.Request.Context(), userId)
 	if err != nil {
@@ -50,6 +77,15 @@ func (c *AclController) Info(ctx *gin.Context) (interface{}, error) {
 	return res, nil
 }
 
+// @Summary 访问菜单树
+// @Description 访问当前登录用户的菜单树
+// @Tags acl
+// @Produce json
+// @Accept json
+// @Security JWT
+// @Success 200 {object} router.Response{data=entity.MenuTree} "成功"
+// @Failure 200 {object} router.Response{} "失败"
+// @Router /api/v1/acl/tree [get]
 func (c *AclController) Tree(ctx *gin.Context) (interface{}, error) {
 	userId := ctx.Value(global.UserId).(int64)
 	var req = service.AclMenuTreeRequest{UserId: userId}
