@@ -72,9 +72,9 @@ func (svc *DepartmentService) List(ctx context.Context, req *DepartmentListReque
 }
 
 type DepartmentCreateRequest struct {
-	Name  string `json:"name"`
-	Desc  string `json:"desc"`
-	State uint8  `json:"state"`
+	Name  string `json:"name"`  //名称
+	Desc  string `json:"desc"`  //描述
+	State uint8  `json:"state"` //状态
 }
 
 func (svc *DepartmentService) Create(ctx context.Context, req *DepartmentCreateRequest) error {
@@ -90,9 +90,9 @@ func (svc *DepartmentService) Create(ctx context.Context, req *DepartmentCreateR
 }
 
 type DepartmentUpdateRequest struct {
-	Name  string `json:"name"`
-	Desc  string `json:"desc"`
-	State uint8  `json:"state"`
+	Name  string `json:"name"`  //名称
+	Desc  string `json:"desc"`  //描述
+	State uint8  `json:"state"` //状态
 }
 
 func (svc *DepartmentService) Update(ctx context.Context, id int64, req *DepartmentUpdateRequest) error {

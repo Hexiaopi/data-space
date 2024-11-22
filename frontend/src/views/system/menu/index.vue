@@ -10,8 +10,7 @@
             </el-button>
         </div>
 
-        <el-table :data="data" style="width: 100%; margin-top: 20px" row-key="id" border default-expand-all
-            :table-layout="'auto'">
+        <el-table :data="data" style="width: 100%; margin-top: 20px" row-key="id" border :table-layout="'auto'">
             <el-table-column align="center" prop="id" label="ID" sortable width="100" />
             <el-table-column align="center" prop="name" label="名称" sortable width="200" />
             <el-table-column align="center" prop="icon" label="类型" width="100">

@@ -15,6 +15,7 @@ type Menu struct {
 	CreateTime time.Time
 	UpdateTime time.Time
 	State      uint8
+	Hidden     bool
 }
 
 func (Menu) TableName() string {

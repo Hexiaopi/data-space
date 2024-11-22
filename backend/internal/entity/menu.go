@@ -29,6 +29,7 @@ type Menu struct {
 	ParentId   int64    `json:"parent_id"`   //父级id
 	CreateTime string   `json:"create_time"` //创建时间
 	UpdateTime string   `json:"update_time"` //修改时间
+	Hidden     bool     `json:"hidden"`      //是否隐藏
 	Children   MenuTree `json:"children"`    //子级菜单
 }
 
@@ -52,6 +53,7 @@ func ToMenu(menu model.Menu) *Menu {
 		ParentId:   menu.ParentId,
 		CreateTime: menu.CreateTime.Format(global.DateTimeFormat),
 		UpdateTime: menu.UpdateTime.Format(global.DateTimeFormat),
+		Hidden:     menu.Hidden,
 	}
 }
 

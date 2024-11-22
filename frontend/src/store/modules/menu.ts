@@ -31,6 +31,7 @@ let useMenuStore = defineStore('menu', {
                     icon: item.icon,
                     title: item.desc,
                     layout: item.layout,
+                    hidden: item.hidden,
                     btns: item.children
                         ?.filter((item) => item.type === 'Button')
                         .map((item) => ({ name: item.name })),
