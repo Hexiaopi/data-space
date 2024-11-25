@@ -22,7 +22,9 @@ func (dao *LoginLogDao) Create(ctx context.Context, loginLog *model.LoginLog) er
 	if loginLog == nil {
 		return nil
 	}
-	loginLog.CreateTime = time.Now()
+	now := time.Now()
+	loginLog.CreateTime = now
+	loginLog.UpdateTime = now
 	return dao.db.WithContext(ctx).Create(loginLog).Error
 }
 
