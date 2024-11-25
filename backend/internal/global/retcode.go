@@ -25,6 +25,8 @@ var (
 	UserCreateFail          = retcode.NewCode("000107", "User Create Fail")
 	UserUpdateFail          = retcode.NewCode("000108", "User Update Fail")
 	UserDeleteFail          = retcode.NewCode("000109", "User Delete Fail")
+	UserCreateRoleFail      = retcode.NewCode("000110", "User Create Role Fail")
+	UserDeleteRoleFail      = retcode.NewCode("000111", "User Delete Role Fail")
 
 	RoleListFail       = retcode.NewCode("000201", "Role List Fail")
 	RoleCountFail      = retcode.NewCode("000202", "Role Count Fail")

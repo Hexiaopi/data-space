@@ -30,7 +30,11 @@ func NewUserController(srv service.Service) *UserController {
 // @Failure 200 {object} router.Response{} "失败"
 // @Router /api/v1/users/{id} [get]
 func (c *UserController) Info(ctx *gin.Context) (interface{}, error) {
-	userId := ctx.Value(global.UserId).(int64)
+	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if err != nil {
+		return nil, global.RequestIllegal
+	}
+	userId := id
 	res, err := c.srv.Users().Info(ctx.Request.Context(), userId)
 	if err != nil {
 		return nil, err

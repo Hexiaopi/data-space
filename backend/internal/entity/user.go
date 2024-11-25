@@ -17,8 +17,7 @@ type User struct {
 
 type UserInfo struct {
 	User
-	Roles       []Role `json:"roles"`        //角色列表
-	CurrentRole Role   `json:"current_role"` //当前角色
+	Roles []Role `json:"roles"` //角色列表
 }
 
 func ToUser(user model.User) *User {

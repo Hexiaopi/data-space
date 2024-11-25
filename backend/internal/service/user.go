@@ -86,7 +86,9 @@ func (svc *UserService) Info(ctx context.Context, userId int64) (*entity.UserInf
 		User: entity.User{
 			ID:         user.ID,
 			Name:       user.Name,
+			Desc:       user.Desc,
 			Avatar:     user.Avatar,
+			State:      user.State,
 			CreateTime: user.CreateTime.Format(global.DateTimeFormat),
 			UpdateTime: user.UpdateTime.Format(global.DateTimeFormat),
 		},
@@ -104,21 +106,22 @@ func (svc *UserService) Info(ctx context.Context, userId int64) (*entity.UserInf
 		res.Roles = append(res.Roles, entity.Role{
 			ID:         role.ID,
 			Name:       role.Name,
+			State:      res.State,
 			CreateTime: role.CreateTime.Format(global.DateTimeFormat),
 			UpdateTime: role.UpdateTime.Format(global.DateTimeFormat),
 		})
 	}
-	res.CurrentRole = res.Roles[0]
 	return &res, nil
 }
 
 type CreateUserRequest struct {
-	Name         string `json:"name"`          //名称
-	Desc         string `json:"desc"`          //描述
-	Avatar       string `json:"avatar"`        //头像
-	Password     string `json:"password"`      //密码
-	State        uint8  `json:"state"`         //状态
-	DepartmentId int64  `json:"department_id"` //部门id
+	Name         string  `json:"name"`          //名称
+	Desc         string  `json:"desc"`          //描述
+	Avatar       string  `json:"avatar"`        //头像
+	Password     string  `json:"password"`      //密码
+	State        uint8   `json:"state"`         //状态
+	DepartmentId int64   `json:"department_id"` //部门id
+	RoleIds      []int64 `json:"roleIds"`       //角色ids
 }
 
 func (svc *UserService) Create(ctx context.Context, req *CreateUserRequest) error {
@@ -144,6 +147,12 @@ func (svc *UserService) Create(ctx context.Context, req *CreateUserRequest) erro
 				return global.DepartmentCreateUserFail
 			}
 		}
+		if len(req.RoleIds) > 0 {
+			if err := factory.Users().CreateRole(ctx, user.ID, req.RoleIds); err != nil {
+				svc.log.Errorf("store role create user err: %v", err)
+				return global.UserCreateRoleFail
+			}
+		}
 		return nil
 	}); err != nil {
 		svc.log.Errorf("store tx err: %v", err)
@@ -153,12 +162,13 @@ func (svc *UserService) Create(ctx context.Context, req *CreateUserRequest) erro
 }
 
 type UpdateUserRequest struct {
-	Id       int64  `json:"id"`       //id
-	Name     string `json:"name"`     //名称
-	Desc     string `json:"desc"`     //描述
-	Avatar   string `json:"avatar"`   //头像
-	Password string `json:"password"` //密码
-	State    uint8  `json:"state"`    //状态
+	Id       int64   `json:"id"`       //id
+	Name     string  `json:"name"`     //名称
+	Desc     string  `json:"desc"`     //描述
+	Avatar   string  `json:"avatar"`   //头像
+	Password string  `json:"password"` //密码
+	State    uint8   `json:"state"`    //状态
+	RoleIds  []int64 `json:"roleIds"`  //角色ids
 }
 
 func (svc *UserService) Update(ctx context.Context, req *UpdateUserRequest) error {
@@ -173,8 +183,24 @@ func (svc *UserService) Update(ctx context.Context, req *UpdateUserRequest) erro
 		svc.log.Errorf("user encrypt password err: %v", err)
 		return global.UserEncryptPasswordFail
 	}
-	if err := svc.store.Users().Update(ctx, user); err != nil {
-		svc.log.Errorf("store user update err: %v", err)
+	if err := svc.store.Tx(ctx, func(ctx context.Context, factory store.Factory) error {
+		if err := svc.store.Users().Update(ctx, user); err != nil {
+			svc.log.Errorf("store user update err: %v", err)
+			return global.UserUpdateFail
+		}
+		if len(req.RoleIds) > 0 {
+			if err := factory.Users().DeleteRole(ctx, req.Id); err != nil {
+				svc.log.Errorf("store user delete role err: %v", err)
+				return global.UserDeleteRoleFail
+			}
+			if err := factory.Users().CreateRole(ctx, req.Id, req.RoleIds); err != nil {
+				svc.log.Errorf("store user create role err: %v", err)
+				return global.UserCreateRoleFail
+			}
+		}
+		return nil
+	}); err != nil {
+		svc.log.Errorf("store tx err: %v", err)
 		return global.UserUpdateFail
 	}
 	return nil

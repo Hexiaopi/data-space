@@ -76,6 +76,12 @@
                         <el-option label="无效" :value="2"></el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item lable="角色">
+                    <el-select v-model="temp.roleIds" multiple>
+                        <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
             </el-form>
             <template #footer>
                 <div slot="footer" class="dialog-footer">
@@ -95,10 +101,12 @@
 import { ref, reactive, onMounted } from 'vue'
 import TreeFilter from "@/components/TreeFilter/index.vue"
 import { listDepartment } from '@/api/department/index'
-import { listUser, createUser, updateUser, deleteUser } from '@/api/user/index'
+import { listUser, createUser, updateUser, deleteUser,getUser } from '@/api/user/index'
 import { User } from '@/api/user/type'
 import { Search, Plus } from '@element-plus/icons-vue'
 import { ElNotification } from 'element-plus'
+import { Role } from '@/api/role/type'
+import { listRole } from '@/api/role'
 
 const list = ref<User[]>([])
 const total = ref(0)
@@ -118,6 +126,8 @@ const temp = ref({
     password: '',
     state: 1,
     department_id: 0,
+    roles: [],
+    roleIds: []
 })
 const resetTemp = () => {
     temp.value = {
@@ -128,6 +138,8 @@ const resetTemp = () => {
         password: '',
         state: 1,
         department_id: listQuery.department_id,
+        roles: [],
+        roleIds: [],
     }
 }
 
@@ -139,6 +151,7 @@ const textMap = {
     create: '创建',
 }
 const dialogFormVisible = ref(false)
+const roles = ref<Role[]>([])
 const stateOptions = [0, 1, 2]
 const statusTypeFilter = (status: number) => {
     const statusMap = {
@@ -188,14 +201,22 @@ function handleFilter() {
 
 function handleCreate() {
     resetTemp()
-    console.log(temp.value)
+    listRole({}).then(response => {
+        roles.value = response.data.roles
+    })
     dialogStatus.value = 'create'
     dialogFormVisible.value = true
 }
 
 function handleUpdate(row) {
     resetTemp()
-    temp.value = Object.assign({}, row)
+    listRole({}).then(response => {
+        roles.value = response.data.roles
+    })
+    getUser(row.id).then(response => {
+        temp.value = response.data
+        temp.value.roleIds = response.data.roles.map(item=>item.id)
+    })
     dialogStatus.value = 'update'
     dialogFormVisible.value = true
 }

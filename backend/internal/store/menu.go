@@ -19,4 +19,5 @@ type MenuStore interface {
 	Delete(ctx context.Context, id int64) error
 	Get(ctx context.Context, options ...Option) (*model.Menu, error)
 	Update(ctx context.Context, menu *model.Menu) error
+	ListMenusByRoles(ctx context.Context, roleIds []int64, options ...Option) ([]model.Menu, error)
 }

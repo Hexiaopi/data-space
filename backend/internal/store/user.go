@@ -13,4 +13,6 @@ type UserStore interface {
 	Delete(ctx context.Context, id int64) error
 	Count(ctx context.Context, options ...Option) (int64, error)
 	List(ctx context.Context, options ...Option) ([]model.User, error)
+	CreateRole(ctx context.Context, userId int64, roleIds []int64) error
+	DeleteRole(ctx context.Context, userId int64) error
 }

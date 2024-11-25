@@ -20,3 +20,7 @@ export const updateUser = (id: number, data: any) => {
 export const deleteUser = (id: number) => {
     return request.delete<any, any>(`${API.User_URL}/${id}`)
 }
+
+export const getUser = (id: number) => {
+    return request.get<any, any>(`${API.User_URL}/${id}`)
+}

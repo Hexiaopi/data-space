@@ -53,7 +53,11 @@ func (svc *MenuService) AclTree(ctx context.Context, param *AclMenuTreeRequest) 
 	if len(roles) == 0 {
 		return nil, nil
 	}
-	menus, err := svc.store.Menus().ListRoleMenus(ctx, roles[0].ID)
+	roleIds := make([]int64, 0, len(roles))
+	for _, role := range roles {
+		roleIds = append(roleIds, role.ID)
+	}
+	menus, err := svc.store.Menus().ListMenusByRoles(ctx, roleIds)
 	if err != nil {
 		svc.log.Errorf("store list role menus err: %v", err)
 		return nil, global.MenuTreeFail

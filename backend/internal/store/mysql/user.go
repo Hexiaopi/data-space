@@ -83,3 +83,23 @@ func (dao *UserDao) Count(ctx context.Context, options ...store.Option) (int64, 
 	}
 	return count, nil
 }
+
+func (dao *UserDao) CreateRole(ctx context.Context, userId int64, roleIds []int64) error {
+	now := time.Now()
+	roles := make([]model.UserRole, 0)
+	for _, roleId := range roleIds {
+		roles = append(roles, model.UserRole{
+			RoleId:     roleId,
+			UserId:     userId,
+			CreateTime: now,
+		})
+	}
+	return dao.db.WithContext(ctx).Create(&roles).Error
+}
+
+func (dao *UserDao) DeleteRole(ctx context.Context, userId int64) error {
+	return dao.db.WithContext(ctx).
+		Where("user_id =?", userId).
+		Delete(&model.UserRole{}).
+		Error
+}
