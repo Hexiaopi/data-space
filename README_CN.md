@@ -1,30 +1,26 @@
 
 # data-space
 
-common manage system
+通用的后台管理系统
 
-<p align="center">
-English | <a href="README_CN.md">简体中文</a>
-</p>
+## 功能
 
-## Features
+- 用户登录和日志
+- 部门管理
+- 用户管理
+- 角色管理
+- 菜单管理
 
-- user login and log
-- depart manage
-- user manage
-- role manage
-- menu manage
+## 🛠 技术栈
 
-## 🛠 Skills
-
-### frontend 
+### 前端
 
 - vue3
 - vite
 - pina
 - element-plus
 
-### backend
+### 后端
 
 - go
 - mysql
@@ -32,32 +28,32 @@ English | <a href="README_CN.md">简体中文</a>
 - opentelemetry
 - prometheus metric
 
-## Installation
+## 安装
 
-### frontend
+### 前端
 
 ```bash
   cd frontend
   npm install
 ```
 
-### backend
+### 后端
 
 ```bash
   cd backend
   go mod tidy
 ```
     
-## Run Locally
+## 本地运行
 
-### frontend
+### 前端
 
 ```bash
   cd frontend
   npm run dev
 ```
 
-### backend
+### 后端
 
 ```bash
   cd backend
@@ -65,7 +61,7 @@ English | <a href="README_CN.md">简体中文</a>
 ```
 
 
-## Screenshots
+## 截图
 
 ![login](./docs/images/login.png)
 ![home](./docs/images/home.png)
@@ -80,11 +76,12 @@ English | <a href="README_CN.md">简体中文</a>
 ![swagger](./docs/images/swagger.png)
 ![metrics](./docs/images/metrics.png)
 
-## Star History
+## 收藏历史
 
 [![Star History Chart](https://api.star-history.com/svg?repos=hexiaopi/data-space&type=Date)](https://star-history.com/#hexiaopi/data-space&Date)
 
-## License
+
+## 许可证
 
 [MIT](https://choosealicense.com/licenses/mit/)
 
