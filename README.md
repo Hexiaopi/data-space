@@ -37,14 +37,13 @@ English | <a href="README_CN.md">简体中文</a>
 ### frontend
 
 ```bash
-  cd frontend
+  cd web
   npm install
 ```
 
 ### backend
 
 ```bash
-  cd backend
   go mod tidy
 ```
     
@@ -53,17 +52,15 @@ English | <a href="README_CN.md">简体中文</a>
 ### frontend
 
 ```bash
-  cd frontend
+  cd web
   npm run dev
 ```
 
 ### backend
 
 ```bash
-  cd backend
   go run cmd/root.go
 ```
-
 
 ## Screenshots
 
